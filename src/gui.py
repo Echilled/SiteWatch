@@ -21,7 +21,7 @@ def set_layout():
 
     websites_layout = [
 
-        [PySG.Text(VERSION, size=(30, 1), font=("Helvetica", 25), pad=(10, 0))],
+        [PySG.Text("Web Domains", size=(30, 1), font=("Helvetica", 25), pad=(10, 0))],
 
         [PySG.InputText("Enter a Web Site", key="-WEBSITE_NAME-", size=(57, 10), pad=(10, 0)),
          PySG.Button("Validate", size=(10, 1))],
@@ -41,7 +41,7 @@ def set_layout():
 
     check_websites_layout = [
 
-        [PySG.Text(VERSION, size=(30, 1), font=("Helvetica", 25), pad=(10, 0))],
+        [PySG.Text("Watcher", size=(30, 1), font=("Helvetica", 25), pad=(10, 0))],
 
     ]
 
@@ -62,7 +62,7 @@ def generate_gui(layout):
     website_list = []
 
     # Create the Window
-    window = PySG.Window("SiteWatch", layout, margins=(10, 5))
+    window = PySG.Window(VERSION, layout, margins=(10, 5))
 
     while True:  # Event Loop
         event, values = window.read()
