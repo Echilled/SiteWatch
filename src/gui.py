@@ -1,10 +1,19 @@
 import PySimpleGUI as PySG
+from selenium import webdriver
 import validator as vad
 import pyperclip
 
-version = "SiteWatch v0.1"
+import parse_json
 
-website_list = []
+VERSION = "SiteWatch v0.1"
+# DRIVER = webdriver.Chrome("chromedriver.exe")
+SITE = ["https://time.gov/", "https://www.ledr.com/colours/white.htm", "http://randomcolour.com/"]
+INDEX = {}
+times_url_change_dict = {}
+DOM_CHANGES = {}
+APP_PASSWORD = 'happymother123'
+
+# DRIVER.minimize_window()
 
 
 def set_layout():
@@ -12,7 +21,7 @@ def set_layout():
 
     websites_layout = [
 
-        [PySG.Text(version, size=(30, 1), font=("Helvetica", 25), pad=(10, 0))],
+        [PySG.Text(VERSION, size=(30, 1), font=("Helvetica", 25), pad=(10, 0))],
 
         [PySG.InputText("Enter a Web Site", key="-WEBSITE_NAME-", size=(57, 10), pad=(10, 0)),
          PySG.Button("Validate", size=(10, 1))],
@@ -23,16 +32,16 @@ def set_layout():
                       [PySG.Button("Confirm", size=(10, 1))],
                       ])],
 
-        [PySG.InputText(key='-FILENAME-', disabled=True, size=(57, 1), text_color="grey2", pad=(10, (10, 0))),
+        [PySG.InputText(key='-ARCHIVE_FILENAME-', disabled=True, size=(57, 1), text_color="grey2", pad=(10, (10, 0))),
          PySG.FileBrowse(size=(10, 1), pad=((5, 0), (5, 0)))],
 
-        [PySG.Button("Upload", size=(10, 1), pad=(10, 10)), PySG.Button("Save", size=(10, 1), pad=(10, 10))],
+        [PySG.Button("Upload", size=(10, 1), pad=(10, 10))],
 
     ]
 
     check_websites_layout = [
 
-        [PySG.Text(version, size=(30, 1), font=("Helvetica", 25), pad=(10, 0))],
+        [PySG.Text(VERSION, size=(30, 1), font=("Helvetica", 25), pad=(10, 0))],
 
     ]
 
@@ -49,6 +58,9 @@ def set_layout():
 
 
 def generate_gui(layout):
+    # Local Variable
+    website_list = []
+
     # Create the Window
     window = PySG.Window("SiteWatch", layout, margins=(10, 5))
 
@@ -66,6 +78,8 @@ def generate_gui(layout):
             if vad.is_valid_url(values["-WEBSITE_NAME-"]):
                 window["-WEBSITE_NAME-"].update(text_color="green2")
                 website_list.append(values["-WEBSITE_NAME-"])
+                website_list = list(set(website_list))
+                website_list.sort()
                 window["-WEBSITE_LISTBOX-"].update(website_list)
             else:
                 window["-WEBSITE_NAME-"].update(text_color="red2")
@@ -75,6 +89,16 @@ def generate_gui(layout):
             window["-WEBSITE_LISTBOX-"].update(website_list)
         if event == "Copy":
             pyperclip.copy(website_list[window["-WEBSITE_LISTBOX-"].get_indexes()[0]])
+
+        if event == "Upload":
+            INDEX.update(parse_json.json_hash_indexer(values["-ARCHIVE_FILENAME-"]))
+            website_list.extend(list(INDEX.keys()))
+            website_list = list(set(website_list))
+            website_list.sort()
+            window["-WEBSITE_LISTBOX-"].update(website_list)
+
+
+
 
     window.close()
 
