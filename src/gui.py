@@ -2,6 +2,8 @@ import PySimpleGUI as PySG
 import validator as vad
 import pyperclip
 
+version = "SiteWatch v0.1"
+
 website_list = []
 
 
@@ -10,7 +12,7 @@ def set_layout():
 
     websites_layout = [
 
-        [PySG.Text("WebSite Watcher V0.1", size=(30, 1), font=("Helvetica", 25), pad=(10, 0))],
+        [PySG.Text(version, size=(30, 1), font=("Helvetica", 25), pad=(10, 0))],
 
         [PySG.InputText("Enter a Web Site", key="-WEBSITE_NAME-", size=(57, 10), pad=(10, 0)),
          PySG.Button("Validate", size=(10, 1))],
@@ -30,7 +32,8 @@ def set_layout():
 
     check_websites_layout = [
 
-        [PySG.Text("WebSite Watcher V0.2", size=(30, 1), font=("Helvetica", 25))],
+        [PySG.Text(version, size=(30, 1), font=("Helvetica", 25), pad=(10, 0))],
+
     ]
 
     tab_group = [
