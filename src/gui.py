@@ -7,10 +7,6 @@ import parse_json
 
 VERSION = "SiteWatch v0.1"
 # DRIVER = webdriver.Chrome("chromedriver.exe")
-SITE = [
-    "https://time.gov/",
-    "https://www.ledr.com/colours/white.htm",
-    "http://randomcolour.com/"]
 INDEX = {}
 times_url_change_dict = {}
 DOM_CHANGES = {}
@@ -36,7 +32,9 @@ def set_layout():
 
         [PySG.Listbox(key="-WEBSITE_LISTBOX-", values=[], size=(55, 15),
                       pad=(10, 0)),
-         PySG.Column([[PySG.Button("Delete", key="-WEBSITE_DELETE-",
+         PySG.Column([[PySG.Button("Crawl", key="-WEBSITE_CRAWL-",
+                                   size=(10, 1))],
+                      [PySG.Button("Delete", key="-WEBSITE_DELETE-",
                                    size=(10, 1))],
                       [PySG.Button("Copy", key="-WEBSITE_COPY-",
                                    size=(10, 1))],
@@ -98,9 +96,9 @@ def generate_gui(layout):
         if event == PySG.WIN_CLOSED or event == "Exit":
             break
 
-        ################################################################################
-        # WEBSITE EVENTS                                                               #
-        ################################################################################
+################################################################################
+# WEBSITE EVENTS                                                               #
+################################################################################
 
         if event == "-WEBSITE_VALIDATE-":
             if vad.is_valid_url(values["-WEBSITE_NAME-"]):
@@ -118,6 +116,8 @@ def generate_gui(layout):
                 window["-WEBSITE_NAME-"].update("Invalid "
                                                 "Domain Name",
                                                 text_color="red2")
+        if event == "-WEBSITE_CRAWL-":
+            pass
 
         if event == "-WEBSITE_DELETE-":
             try:
@@ -169,15 +169,15 @@ def generate_gui(layout):
                 window["-WEBSITE_INDEX_INFO"]. \
                     update("INDEX FILE NOT FOUND!", text_color="Red2")
 
-        ################################################################################
-        # MONITOR EVENTS                                                               #
-        ################################################################################
+################################################################################
+# MONITOR EVENTS                                                               #
+################################################################################
         if event == "-MONITOR_BACK-":
             window['-WEBSITE_TAB-'].update(disabled=False)
             window['-TAB_GROUP-'].Widget.select(0)
             window['-MONITOR_TAB-'].update(disabled=True)
 
-    ################################################################################
+################################################################################
 
     window.close()
 
