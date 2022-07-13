@@ -28,9 +28,10 @@ def set_layout():
         [PySG.Text("Web Domains", size=(30, 1), font=("Helvetica", 25),
                    pad=(10, 0), text_color="white")],
 
-        [PySG.InputText("Enter a Domain Name", key="-WEBSITE_NAME-",
+        [PySG.InputText("Enter a Fully Qualified Domain Name",
+                        key="-WEBSITE_NAME-",
                         size=(57, 10), pad=(10, 0)),
-         PySG.Button("Validate", key="-WEBSITE_VALIDATE",
+         PySG.Button("Validate", key="-WEBSITE_VALIDATE-",
                      size=(10, 1))],
 
         [PySG.Listbox(key="-WEBSITE_LISTBOX-", values=[], size=(55, 15),
@@ -40,13 +41,15 @@ def set_layout():
                       [PySG.Button("Copy", key="-WEBSITE_COPY-",
                                    size=(10, 1))],
                       [PySG.Button("Monitor", key="-WEBSITE_MONITOR-",
-                                   size=(10, 1))],
+                                   size=(10, 1), button_color="black on red3",
+                                   disabled=True)],
                       ])
          ],
 
         [PySG.InputText(key="-WEBSITE_FILENAME-", disabled=True, size=(57, 1),
                         text_color="grey2", pad=(10, (10, 0))),
-         PySG.FileBrowse(size=(10, 1), pad=((5, 0), (5, 0)))],
+         PySG.FileBrowse(size=(10, 1), pad=((5, 0), (5, 0)),
+                         file_types=('ALL Files', '*.json'),)],
 
         [PySG.Button("Upload", key="-WEBSITE_UPLOAD-",
                      size=(10, 1), pad=(10, 10)),
@@ -64,7 +67,6 @@ def set_layout():
 
         [PySG.Button("Back", key="-MONITOR_BACK-", size=(10, 1), pad=(10, 10))]
 
-
     ]
 
     tab_group = [
@@ -75,7 +77,7 @@ def set_layout():
                          disabled=True),
             ]],
             key='-TAB_GROUP-', enable_events=True)]
-        ]
+    ]
 
     return tab_group
 
@@ -96,16 +98,22 @@ def generate_gui(layout):
         if event == PySG.WIN_CLOSED or event == "Exit":
             break
 
-################################################################################
-# WEBSITE EVENTS                                                               #
-################################################################################
+        ################################################################################
+        # WEBSITE EVENTS                                                               #
+        ################################################################################
 
         if event == "-WEBSITE_VALIDATE-":
             if vad.is_valid_url(values["-WEBSITE_NAME-"]):
-                window["-WEBSITE_NAME-"].update(text_color="green2")
+                window["-WEBSITE_NAME-"].update(text_color="green4")
                 website_list.append(values["-WEBSITE_NAME-"])
                 website_list = sorted(set(website_list))
                 window["-WEBSITE_LISTBOX-"].update(website_list)
+                if website_list:
+                    window["-WEBSITE_MONITOR-"].update(
+                        button_color="white on green4", disabled=False)
+                else:
+                    window["-WEBSITE_MONITOR-"].update(
+                        button_color="white on red3", disabled=True)
             else:
                 window["-WEBSITE_NAME-"].update("Invalid "
                                                 "Domain Name",
@@ -115,6 +123,12 @@ def generate_gui(layout):
             try:
                 website_list.pop(window["-WEBSITE_LISTBOX-"].get_indexes()[0])
                 window["-WEBSITE_LISTBOX-"].update(website_list)
+                if website_list:
+                    window["-WEBSITE_MONITOR-"].update(
+                        button_color="white on green4", disabled=False)
+                else:
+                    window["-WEBSITE_MONITOR-"].update(
+                        button_color="white on red3", disabled=True)
             except IndexError:
                 pass
 
@@ -141,7 +155,13 @@ def generate_gui(layout):
                     window["-WEBSITE_LISTBOX-"].update(website_list)
                     window["-WEBSITE_INDEX_INFO"]. \
                         update("VALID INDEX FILE UPLOADED!",
-                               text_color="green2")
+                               text_color="green4")
+                    if website_list:
+                        window["-WEBSITE_MONITOR-"].update(
+                            button_color="white on green4", disabled=False)
+                    else:
+                        window["-WEBSITE_MONITOR-"].update(
+                            button_color="red3", disabled=True)
                 else:
                     window["-WEBSITE_INDEX_INFO"]. \
                         update("INVALID INDEX FILE!", text_color="Red2")
@@ -149,19 +169,18 @@ def generate_gui(layout):
                 window["-WEBSITE_INDEX_INFO"]. \
                     update("INDEX FILE NOT FOUND!", text_color="Red2")
 
-################################################################################
-# MONITOR EVENTS                                                               #
-################################################################################
+        ################################################################################
+        # MONITOR EVENTS                                                               #
+        ################################################################################
         if event == "-MONITOR_BACK-":
             window['-WEBSITE_TAB-'].update(disabled=False)
             window['-TAB_GROUP-'].Widget.select(0)
             window['-MONITOR_TAB-'].update(disabled=True)
 
-
-
-################################################################################
+    ################################################################################
 
     window.close()
+
 
 ################################################################################
 # TESTS                                                                        #
