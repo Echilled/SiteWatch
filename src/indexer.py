@@ -9,4 +9,14 @@ def delete(INDEX, domain):
         INDEX.pop(domain, None)
     except KeyError:
         print("Unable to find Domain!")
-    return
+
+
+def table(INDEX):
+    table_list = []
+    for website in INDEX.keys():
+        temp_list = [website]
+        temp_list += INDEX[website]
+        table_list.append(temp_list)
+    print(table_list)
+    return table_list
+

@@ -22,59 +22,94 @@ def set_layout():
 
     website_layout = [
 
-        [PySG.Text("Web Domains", size=(30, 1), font=("Helvetica", 25),
-                   pad=(10, 0), text_color="white")],
+        [PySG.Text("Web Domains",
+                   size=(30, 1),
+                   font=("Helvetica", 25),
+                   pad=(10, 0),
+                   text_color="white")],
 
         [PySG.InputText("Enter a Fully Qualified Domain Name",
-                        key="-WEBSITE_NAME-",
-                        size=(57, 10), pad=(10, 0)),
-         PySG.Button("Validate", key="-WEBSITE_VALIDATE-",
-                     size=(10, 1))],
+                        size=(57, 10),
+                        pad=(10, 0),
+                        key="-WEBSITE_NAME-"),
 
-        [PySG.Listbox(key="-WEBSITE_LISTBOX-", values=[], size=(55, 15),
-                      pad=(10, 0)),
-         PySG.Column([[PySG.Button("Crawl", key="-WEBSITE_CRAWL-",
-                                   size=(10, 1))],
-                      [PySG.Button("Delete", key="-WEBSITE_DELETE-",
-                                   size=(10, 1))],
-                      [PySG.Button("Copy", key="-WEBSITE_COPY-",
-                                   size=(10, 1))],
-                      [PySG.Button("Monitor", key="-WEBSITE_MONITOR-",
-                                   size=(10, 1), button_color="black on red3",
-                                   disabled=True)],
+         PySG.Button("Validate",
+                     size=(10, 1),
+                     key="-WEBSITE_VALIDATE-")],
+
+        [PySG.Listbox(values=[],
+                      size=(55, 15),
+                      pad=(10, 0),
+                      key="-WEBSITE_LISTBOX-"),
+
+         PySG.Column([[PySG.Button("Crawl",
+                                   size=(10, 1),
+                                   key="-WEBSITE_CRAWL-")],
+                      [PySG.Button("Delete",
+                                   size=(10, 1),
+                                   key="-WEBSITE_DELETE-")],
+                      [PySG.Button("Copy",
+                                   size=(10, 1),
+                                   key="-WEBSITE_COPY-")],
+                      [PySG.Button("Monitor",
+                                   size=(10, 1),
+                                   button_color="black on red3",
+                                   disabled=True,
+                                   key="-WEBSITE_MONITOR-")],
                       ])
          ],
 
-        [PySG.InputText(key="-WEBSITE_FILENAME-", disabled=True, size=(57, 1),
-                        text_color="grey2", pad=(10, (10, 0))),
-         PySG.FileBrowse(size=(10, 1), pad=((5, 0), (5, 0)),
+        [PySG.InputText(size=(57, 1),
+                        text_color="grey2",
+                        pad=(10, (10, 0)),
+                        disabled=True,
+                        key="-WEBSITE_FILENAME-"),
+
+         PySG.FileBrowse(size=(10, 1),
+                         pad=((5, 0), (5, 0)),
                          file_types=('ALL Files', '*.json'),)],
 
-        [PySG.Button("Upload", key="-WEBSITE_UPLOAD-",
-                     size=(10, 1), pad=(10, 10)),
-         PySG.Text("No index file uploaded...", key="-WEBSITE_INDEX_INFO",
-                   pad=(5, 10))],
+        [PySG.Button("Upload",
+                     size=(10, 1),
+                     pad=(10, 10),
+                     key="-WEBSITE_UPLOAD-"),
+
+         PySG.Text("No index file uploaded...",
+                   pad=(5, 10),
+                   key="-WEBSITE_INDEX_INFO")],
     ]
 
     monitor_layout = [
 
-        [PySG.Text("Watcher", size=(30, 1), font=("Helvetica", 25),
+        [PySG.Text("Watcher",
+                   size=(30, 1),
+                   font=("Helvetica", 25),
                    pad=(10, 0), text_color="white")],
 
-        [PySG.Table(values=[["John", 10], ["Jen", 5]], headings=["Domain", "Verified"], key='-MONITOR_TABLE-')],
+        [PySG.Table(values=[],
+                    headings=["Domain", "Hash", "Archival Date", "Verified"],
+                    key='-MONITOR_TABLE-')],
 
-        [PySG.Button("Back", key="-MONITOR_BACK-", size=(10, 1), pad=(10, 10))]
-
+        [PySG.Button("Back",
+                     size=(10, 1),
+                     pad=(10, 10),
+                     key="-MONITOR_BACK-")]
     ]
 
     tab_group = [
         [PySG.TabGroup(
             [[
-                PySG.Tab("Website", website_layout, key="-WEBSITE_TAB-"),
-                PySG.Tab("Monitor", monitor_layout, key="-MONITOR_TAB-",
+                PySG.Tab("Website",
+                         website_layout,
+                         key="-WEBSITE_TAB-"),
+
+                PySG.Tab("Monitor",
+                         monitor_layout,
+                         key="-MONITOR_TAB-",
                          disabled=True),
             ]],
-            key='-TAB_GROUP-', enable_events=True)]
+            enable_events=True,
+            key='-TAB_GROUP-')]
     ]
 
     return tab_group
@@ -143,7 +178,7 @@ def generate_gui(layout):
             for domain in window["-WEBSITE_LISTBOX-"].get_list_values():
                 indexer.add(INDEX, domain)
 
-            print("The INDEX:", INDEX)
+            window['-MONITOR_TABLE-'].update(values=indexer.table(INDEX))
 
             window['-MONITOR_TAB-'].update(disabled=False)
             window['-TAB_GROUP-'].Widget.select(1)
