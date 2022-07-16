@@ -67,7 +67,7 @@ def set_layout():
 
          PySG.FileBrowse(size=(10, 1),
                          pad=((5, 0), (5, 0)),
-                         file_types=('ALL Files', '*.json'),)],
+                         file_types=(('ALL Files', '*.json'),))],
 
         [PySG.Button("Upload",
                      size=(10, 1),
@@ -88,6 +88,10 @@ def set_layout():
 
         [PySG.Table(values=[],
                     headings=["Domain", "Hash", "Archival Date", "Verified"],
+                    justification="left",
+                    alternating_row_color="grey8",
+                    expand_x=True,
+                    expand_y=True,
                     key='-MONITOR_TABLE-')],
 
         [PySG.Button("Back",
@@ -121,7 +125,9 @@ def generate_gui(layout):
     # Monitor Variables
 
     # Create the Window
-    window = PySG.Window(VERSION, layout, margins=(10, 5))
+    window = PySG.Window(VERSION,
+                         layout,
+                         margins=(10, 5))
 
     while True:  # Event Loop
         event, values = window.read()
