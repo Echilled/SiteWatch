@@ -4,6 +4,7 @@ import validator as vad
 import pyperclip
 
 import parse_json
+import indexer
 
 VERSION = "SiteWatch v0.1"
 # DRIVER = webdriver.Chrome("chromedriver.exe")
@@ -60,8 +61,7 @@ def set_layout():
         [PySG.Text("Watcher", size=(30, 1), font=("Helvetica", 25),
                    pad=(10, 0), text_color="white")],
 
-        [PySG.InputText("Enter thing", key="-MONITOR_NAME-",
-                        size=(57, 10), pad=(10, 0))],
+        [PySG.Table(values=[["John", 10], ["Jen", 5]], headings=["Domain", "Verified"], key='-MONITOR_TABLE-')],
 
         [PySG.Button("Back", key="-MONITOR_BACK-", size=(10, 1), pad=(10, 10))]
 
@@ -82,7 +82,6 @@ def set_layout():
 
 def generate_gui(layout):
     # Website Variables
-    website_list = []
 
     # Monitor Variables
 
@@ -103,10 +102,9 @@ def generate_gui(layout):
         if event == "-WEBSITE_VALIDATE-":
             if vad.is_valid_url(values["-WEBSITE_NAME-"]):
                 window["-WEBSITE_NAME-"].update(text_color="green4")
-                website_list.append(values["-WEBSITE_NAME-"])
-                website_list = sorted(set(website_list))
-                window["-WEBSITE_LISTBOX-"].update(website_list)
-                if website_list:
+                indexer.add(INDEX, values["-WEBSITE_NAME-"])
+                window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
+                if INDEX.keys():
                     window["-WEBSITE_MONITOR-"].update(
                         button_color="white on green4", disabled=False)
                 else:
@@ -121,9 +119,11 @@ def generate_gui(layout):
 
         if event == "-WEBSITE_DELETE-":
             try:
-                website_list.pop(window["-WEBSITE_LISTBOX-"].get_indexes()[0])
-                window["-WEBSITE_LISTBOX-"].update(website_list)
-                if website_list:
+                indexer.delete(INDEX,
+                               window["-WEBSITE_LISTBOX-"].get_list_values()[
+                                   window["-WEBSITE_LISTBOX-"].get_indexes()[0]])
+                window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
+                if INDEX.keys():
                     window["-WEBSITE_MONITOR-"].update(
                         button_color="white on green4", disabled=False)
                 else:
@@ -134,12 +134,17 @@ def generate_gui(layout):
 
         if event == "-WEBSITE_COPY-":
             try:
-                pyperclip.copy(
-                    website_list[window["-WEBSITE_LISTBOX-"].get_indexes()[0]])
+                pyperclip.copy(window["-WEBSITE_LISTBOX-"].get_list_values()[
+                                   window["-WEBSITE_LISTBOX-"].get_indexes()[0]])
             except IndexError:
                 pass
 
         if event == "-WEBSITE_MONITOR-":
+            for domain in window["-WEBSITE_LISTBOX-"].get_list_values():
+                indexer.add(INDEX, domain)
+
+            print("The INDEX:", INDEX)
+
             window['-MONITOR_TAB-'].update(disabled=False)
             window['-TAB_GROUP-'].Widget.select(1)
             window['-WEBSITE_TAB-'].update(disabled=True)
@@ -150,13 +155,11 @@ def generate_gui(layout):
                     INDEX.update(
                         parse_json.json_hash_indexer(
                             values["-WEBSITE_FILENAME-"]))
-                    website_list.extend(list(INDEX.keys()))
-                    website_list = sorted(set(website_list))
-                    window["-WEBSITE_LISTBOX-"].update(website_list)
+                    window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
                     window["-WEBSITE_INDEX_INFO"]. \
                         update("VALID INDEX FILE UPLOADED!",
                                text_color="green4")
-                    if website_list:
+                    if INDEX.keys():
                         window["-WEBSITE_MONITOR-"].update(
                             button_color="white on green4", disabled=False)
                     else:

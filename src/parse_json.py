@@ -7,7 +7,7 @@ def json_hash_indexer(location="WebHash.Json"):
             index = {}
             data = json.load(file)
             for url, properties in data['URLs'].items():
-                index[url] = properties['properties']['hash']
+                index[url] = [properties['properties']['hash'], properties['properties']['archival_date']]
                 # print(properties)
             return index
         except Exception as e:
