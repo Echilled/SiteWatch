@@ -125,7 +125,7 @@ def set_layout():
                          key="-MONITOR_TAB-",
                          disabled=True),
             ]],
-            expand_y    =True,
+            expand_y=True,
             enable_events=True,
             key='-TAB_GROUP-')]
     ]
@@ -175,8 +175,9 @@ def generate_gui(layout):
         if event == "-WEBSITE_DELETE-":
             try:
                 indexer.delete(INDEX,
-                               window["-WEBSITE_LISTBOX-"].get_list_values()[
-                                   window["-WEBSITE_LISTBOX-"].get_indexes()[0]])
+                               window["-WEBSITE_LISTBOX-"].get_list_values()
+                               [window["-WEBSITE_LISTBOX-"].get_indexes()[0]])
+
                 window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
                 if INDEX.keys():
                     window["-WEBSITE_MONITOR-"].update(
@@ -189,8 +190,8 @@ def generate_gui(layout):
 
         if event == "-WEBSITE_COPY-":
             try:
-                pyperclip.copy(window["-WEBSITE_LISTBOX-"].get_list_values()[
-                                   window["-WEBSITE_LISTBOX-"].get_indexes()[0]])
+                pyperclip.copy(window["-WEBSITE_LISTBOX-"].get_list_values()
+                               [window["-WEBSITE_LISTBOX-"].get_indexes()[0]])
             except IndexError:
                 pass
 
@@ -206,10 +207,12 @@ def generate_gui(layout):
 
         if event == "-WEBSITE_UPLOAD-":
             try:
-                if True:  # json verifier and decrypter
-                    INDEX.update(
-                        parse_json.json_hash_indexer(
-                            values["-WEBSITE_FILENAME-"]))
+                if parse_json.json_verifier(values["-WEBSITE_FILENAME-"],
+                                            decryption_password=123, ):
+
+                    INDEX.update(parse_json.json_hash_indexer(
+                        values["-WEBSITE_FILENAME-"]))
+
                     window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
                     window["-WEBSITE_INDEX_INFO"]. \
                         update("VALID INDEX FILE UPLOADED!",
