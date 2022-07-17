@@ -29,7 +29,7 @@ def set_layout():
                    text_color="white")],
 
         [PySG.InputText("Enter a Fully Qualified Domain Name",
-                        size=(57, 10),
+                        size=(65, 10),
                         pad=(10, 0),
                         key="-WEBSITE_NAME-"),
 
@@ -38,7 +38,7 @@ def set_layout():
                      key="-WEBSITE_VALIDATE-")],
 
         [PySG.Listbox(values=[],
-                      size=(55, 15),
+                      size=(63, 15),
                       pad=(10, 0),
                       key="-WEBSITE_LISTBOX-"),
 
@@ -59,7 +59,7 @@ def set_layout():
                       ])
          ],
 
-        [PySG.InputText(size=(57, 1),
+        [PySG.InputText(size=(64, 1),
                         text_color="grey2",
                         pad=(10, (10, 0)),
                         disabled=True,
@@ -87,11 +87,15 @@ def set_layout():
                    pad=(10, 0), text_color="white")],
 
         [PySG.Table(values=[],
-                    headings=["Domain", "Hash", "Archival Date", "Verified"],
+                    headings=["Domain", "Hash", "Archival Date"],
                     justification="left",
                     alternating_row_color="grey8",
+                    auto_size_columns=False,
+                    def_col_width=5,
+                    col_widths=[22, 27, 15],
                     expand_x=True,
                     expand_y=True,
+                    enable_click_events=True,
                     key='-MONITOR_TABLE-')],
 
         [PySG.Button("Back",
@@ -216,6 +220,11 @@ def generate_gui(layout):
 ################################################################################
 # MONITOR EVENTS                                                               #
 ################################################################################
+        if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
+            if event[2][0] == -1 and event[2][1] != -1:
+                window['-MONITOR_TABLE-'].update(values=indexer.sort_table(
+                    window['-MONITOR_TABLE-'].get(), event[2][1]))
+
         if event == "-MONITOR_BACK-":
             window['-WEBSITE_TAB-'].update(disabled=False)
             window['-TAB_GROUP-'].Widget.select(0)
