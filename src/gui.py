@@ -98,6 +98,15 @@ def set_layout():
                     enable_click_events=True,
                     key='-MONITOR_TABLE-')],
 
+        [PySG.Button("Monitor",
+                     size=(10, 1),
+                     pad=(10, 10),
+                     key="-MONITOR_MONITOR-"),
+         PySG.Button("Info",
+                     size=(10, 1),
+                     pad=(10, 10),
+                     key="-MONITOR_INFO-")],
+
         [PySG.Button("Back",
                      size=(10, 1),
                      pad=(10, 10),
@@ -107,15 +116,16 @@ def set_layout():
     tab_group = [
         [PySG.TabGroup(
             [[
-                PySG.Tab("Website",
+                PySG.Tab("        Website        ",
                          website_layout,
                          key="-WEBSITE_TAB-"),
 
-                PySG.Tab("Monitor",
+                PySG.Tab("        Monitor        ",
                          monitor_layout,
                          key="-MONITOR_TAB-",
                          disabled=True),
             ]],
+            expand_y    =True,
             enable_events=True,
             key='-TAB_GROUP-')]
     ]

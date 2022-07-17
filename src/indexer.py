@@ -1,5 +1,6 @@
 import operator
 
+
 def add(INDEX, domain):
     if domain not in INDEX:
         INDEX[domain] = []
