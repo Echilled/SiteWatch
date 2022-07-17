@@ -98,10 +98,10 @@ def set_layout():
                     enable_click_events=True,
                     key='-MONITOR_TABLE-')],
 
-        [PySG.Button("Monitor",
+        [PySG.Button("Update",
                      size=(10, 1),
                      pad=(10, 10),
-                     key="-MONITOR_MONITOR-"),
+                     key="-MONITOR_UPDATE-"),
          PySG.Button("Info",
                      size=(10, 1),
                      pad=(10, 10),
@@ -237,6 +237,11 @@ def generate_gui(layout):
             if event[2][0] == -1 and event[2][1] != -1:
                 window['-MONITOR_TABLE-'].update(values=indexer.sort_table(
                     window['-MONITOR_TABLE-'].get(), event[2][1]))
+
+        if event == "-MONITOR_UPDATE-":
+            pass
+        if event == "-MONITOR_INFO-":
+            pass
 
         if event == "-MONITOR_BACK-":
             window['-WEBSITE_TAB-'].update(disabled=False)
