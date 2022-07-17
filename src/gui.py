@@ -87,7 +87,7 @@ def set_layout():
                    pad=(10, 0), text_color="white")],
 
         [PySG.Table(values=[],
-                    headings=["Domain", "Hash", "Archival Date"],
+                    headings=["Domain", "Hash", "Updated"],
                     justification="left",
                     alternating_row_color="grey8",
                     auto_size_columns=False,
