@@ -30,8 +30,14 @@ def sort_table(INDEX, column):
         reversed_sort = True
 
     if column == 0:
-        return sorted(INDEX, key=operator.itemgetter(column), reverse=reversed_sort)
+        return sorted(INDEX,
+                      key=operator.itemgetter(column),
+                      reverse=reversed_sort)
     elif column == 1:
-        return sorted(INDEX, key=operator.itemgetter(column), reverse=reversed_sort)
+        return sorted(INDEX,
+                      key=operator.itemgetter(column),
+                      reverse=reversed_sort)
     elif column == 2:
-        return sorted(INDEX, key=operator.itemgetter(column), reverse=reversed_sort)
+        return sorted(INDEX,
+                      key=operator.itemgetter(column),
+                      reverse=reversed_sort)

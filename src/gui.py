@@ -96,7 +96,15 @@ def set_layout():
                     expand_x=True,
                     expand_y=True,
                     enable_click_events=True,
+                    right_click_menu=["dd", ["Update", "Copy", "Info"]],
                     key='-MONITOR_TABLE-')],
+
+        [PySG.Text("Filter: ",
+                   pad=((10, 0), (10, 0))),
+         PySG.InputText(size=(74, 1),
+                        pad=(10, (10, 0)),
+                        enable_events=True,
+                        key="-MONITOR_FILTER-")],
 
         [PySG.Button("Update",
                      size=(10, 1),
@@ -238,7 +246,17 @@ def generate_gui(layout):
                 window['-MONITOR_TABLE-'].update(values=indexer.sort_table(
                     window['-MONITOR_TABLE-'].get(), event[2][1]))
 
+        if values['-MONITOR_FILTER-'] != '':
+            filter_list = []
+            for row in indexer.table(INDEX):
+                if values['-MONITOR_FILTER-'] in " ".join(row):
+                    filter_list.append(row)
+            window['-MONITOR_TABLE-'].update(filter_list)
+        else:
+            window['-MONITOR_TABLE-'].update(indexer.table(INDEX))
+
         if event == "-MONITOR_UPDATE-":
+            print(window['-MONITOR_TABLE-'].get())
             pass
         if event == "-MONITOR_INFO-":
             pass
