@@ -247,10 +247,8 @@ def generate_gui(layout):
                     window['-MONITOR_TABLE-'].get(), event[2][1]))
 
         if values['-MONITOR_FILTER-'] != '':
-            filter_list = []
-            for row in indexer.table(INDEX):
-                if values['-MONITOR_FILTER-'] in " ".join(row):
-                    filter_list.append(row)
+            filter_list = [row if values['-MONITOR_FILTER-'] in " ".join(row)
+                           else "" for row in indexer.table(INDEX)]
             window['-MONITOR_TABLE-'].update(filter_list)
         else:
             window['-MONITOR_TABLE-'].update(indexer.table(INDEX))
