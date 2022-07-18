@@ -124,11 +124,11 @@ def set_layout():
     tab_group = [
         [PySG.TabGroup(
             [[
-                PySG.Tab("        Website        ",
+                PySG.Tab("           Website           ",
                          website_layout,
                          key="-WEBSITE_TAB-"),
 
-                PySG.Tab("        Monitor        ",
+                PySG.Tab("           Monitor           ",
                          monitor_layout,
                          key="-MONITOR_TAB-",
                          disabled=True),
