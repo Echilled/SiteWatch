@@ -41,3 +41,4 @@ def sort_table(INDEX, column):
         return sorted(INDEX,
                       key=operator.itemgetter(column),
                       reverse=reversed_sort)
+

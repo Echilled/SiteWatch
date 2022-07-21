@@ -159,7 +159,7 @@ def generate_gui(layout):
     # Website Variables
 
     # Monitor Variables
-    selected_row = 0
+    selected_row = None
 
     # Create the Window
     window = PySG.Window(VERSION,
@@ -173,9 +173,9 @@ def generate_gui(layout):
         if event == PySG.WIN_CLOSED or event == "Exit":
             break
 
-        ################################################################################
-        # WEBSITE EVENTS                                                               #
-        ################################################################################
+################################################################################
+# WEBSITE EVENTS                                                               #
+################################################################################
 
         if event == "-WEBSITE_VALIDATE-":
             if vad.is_valid_url(values["-WEBSITE_NAME-"]):
@@ -253,9 +253,9 @@ def generate_gui(layout):
                 window["-WEBSITE_INDEX_INFO"]. \
                     update("INDEX FILE NOT FOUND!", text_color="Red2")
 
-        ################################################################################
-        # MONITOR EVENTS                                                               #
-        ################################################################################
+################################################################################
+# MONITOR EVENTS                                                               #
+################################################################################
         if values['-MONITOR_FILTER-'] != '':
             filter_list = [row for row in indexer.table(INDEX)
                            if values['-MONITOR_FILTER-'] in " ".join(row)]
@@ -272,6 +272,7 @@ def generate_gui(layout):
 
         if event == "-MONITOR_UPDATE-":
             window['-MONITOR_PROG-'].update(0, 1)
+
             if selected_row is not None:
                 url = window['-MONITOR_TABLE-'].get()[selected_row]
                 updated = webdriver.update(url)
@@ -279,11 +280,15 @@ def generate_gui(layout):
                 updates = window['-MONITOR_TABLE-'].get()
                 updates.pop(selected_row)
                 updates.insert(selected_row, updated)
+
+                if webdriver.compare_hash(url)[0]:
+                    pass
+                else:
+                    pass
+
                 window['-MONITOR_TABLE-'].update(
                     [row for row in indexer.table(INDEX)
                      if values['-MONITOR_FILTER-'] in " ".join(row)])
-            else:
-                pass
 
             window['-MONITOR_PROG-'].update(1, 1)
 
@@ -305,15 +310,22 @@ def generate_gui(layout):
                     pass
                 window['-MONITOR_PROG-'].update(e + 1, max_val)
 
-        if event == "-MONITOR_INFO-":
-            pass
+        if event == "-MONITOR_DETAILS-":
+            if selected_row is not None:
+                if selected_row is not None:
+                    domain = window['-MONITOR_TABLE-'].get()[
+                                          selected_row]
+                    info = webdriver.details(domain,
+                                             values["-WEBSITE_FILENAME-"])
+
+                    PySG.popup("URL DETAILS", info)
 
         if event == "-MONITOR_BACK-":
             window['-WEBSITE_TAB-'].update(disabled=False)
             window['-TAB_GROUP-'].Widget.select(0)
             window['-MONITOR_TAB-'].update(disabled=True)
 
-    ################################################################################
+################################################################################
 
     window.close()
 
