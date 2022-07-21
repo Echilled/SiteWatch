@@ -94,26 +94,6 @@ def archive_updater(json_filename):
         os.rename(new, "archive\\" + page_title + ".html")
 
 
-def json_construct(id, hash, date, times_it_changed):
-    website_dic = {id: {'properties': {}}}
-    values = [{'hash': hash}, {'archival_date': date}, {'number of times URL content change': times_it_changed}]
-    for val in values:
-        website_dic[id]['properties'].update(val)
-    return website_dic
-
-
-def update_json(filename, data_dict):
-    with open(filename, "r") as rfile:
-        archived_history = json.load(rfile)
-        for key, value in archived_history['URLs'].items():
-            if key in data_dict['URLs'].keys():
-                archived_history['URLs'][key] = data_dict['URLs'][key]
-        json_object = json.dumps(archived_history, indent=4)
-        rfile.close()
-    with open(filename, "w") as outfile:
-        outfile.write(json_object)
-
-
 def page_archiver(page_source, page_title):
     page_title = format_title(page_title)
     if not os.path.isfile("archive\\" + page_title + ".html"):

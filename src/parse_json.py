@@ -26,8 +26,14 @@ def json_construct(id, hash, date, times_it_changed):
 
 
 def update_json(filename, data_dict):
+    with open(filename, "r") as rfile:
+        archived_history = json.load(rfile)
+        for key, value in archived_history['URLs'].items():
+            if key in data_dict['URLs'].keys():
+                archived_history['URLs'][key] = data_dict['URLs'][key]
+        json_object = json.dumps(archived_history, indent=4)
+        rfile.close()
     with open(filename, "w") as outfile:
-        json_object = json.dumps(data_dict, indent=4)
         outfile.write(json_object)
 
 

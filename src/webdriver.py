@@ -16,9 +16,6 @@ options.add_argument('--headless')
 options.add_argument('--disable-gpu')
 DRIVER = webdriver.Chrome("chromedriver.exe", options=options)
 
-OLD_INDEX = {}
-
-
 def update(domain):
     DRIVER.get(domain[0])
     dom = DRIVER.page_source
@@ -47,24 +44,24 @@ def compare_hash(domain):
 
 
 def details(domain, loc):
-    out = []
-    DRIVER.get(domain[0])
-    title = DRIVER.title.replace("|", "")
+    try:
+        out = []
+        DRIVER.get(domain[0])
+        title = DRIVER.title.replace("|", "")
 
-    size_kb = os.path.getsize("archive/" + title + ".html") / 1024.0
+        size_kb = os.path.getsize("archive/" + title + ".html") / 1024.0
+        old_index = parse_json.json_hash_indexer(loc)
 
-    OLD_INDEX = parse_json.json_hash_indexer(loc)
-
-    print(OLD_INDEX)
-
-    out.append("URL: " + domain[0] + "\r\n")
-    out.append("Title: " + title + "\r\n")
-    out.append("New MD5: " + domain[1] + "\r\n")
-    out.append("Old   MD5: " + OLD_INDEX[domain[0]][0] + "\r\n")
-    out.append("Updated: " + domain[2] + "\r\n")
-    out.append("Archived: " + OLD_INDEX[domain[0]][1] + "\r\n")
-    out.append("File Size: " + str(size_kb) + "KB" + "\r\n")
-    return "".join(out)
+        out.append("URL: " + domain[0] + "\r\n")
+        out.append("Title: " + title + "\r\n")
+        out.append("New MD5: " + domain[1] + "\r\n")
+        out.append("Old   MD5: " + old_index[domain[0]][0] + "\r\n")
+        out.append("Updated: " + domain[2] + "\r\n")
+        out.append("Archived: " + old_index[domain[0]][1] + "\r\n")
+        out.append("File Size: " + str(size_kb) + "KB" + "\r\n")
+        return "".join(out)
+    except Exception:
+        return "Error Getting Details!"
 
 
 
