@@ -91,11 +91,10 @@ def set_layout():
                     alternating_row_color="grey8",
                     auto_size_columns=False,
                     def_col_width=5,
-                    col_widths=[22, 30, 15],
+                    col_widths=[28, 30, 15],
                     expand_x=True,
                     expand_y=True,
                     enable_click_events=True,
-                    right_click_menu=["dd", ["Update", "Copy", "Info"]],
                     key='-MONITOR_TABLE-')],
 
         [PySG.Text("Filter: ",
@@ -109,10 +108,16 @@ def set_layout():
                      size=(10, 1),
                      pad=(10, 10),
                      key="-MONITOR_UPDATE-"),
-         PySG.Button("Info",
+
+         PySG.Button("Update All",
                      size=(10, 1),
                      pad=(10, 10),
-                     key="-MONITOR_INFO-")],
+                     key="-MONITOR_UPDATE_ALL-"),
+
+         PySG.Button("Details",
+                     size=(10, 1),
+                     pad=(10, 10),
+                     key="-MONITOR_DETAILS-")],
 
         [PySG.ProgressBar(100,
                           size=(66, 20),
@@ -123,7 +128,11 @@ def set_layout():
         [PySG.Button("Back",
                      size=(10, 1),
                      pad=(10, 10),
-                     key="-MONITOR_BACK-")]
+                     key="-MONITOR_BACK-"),
+
+         PySG.Text("No Task Assigned...",
+                   pad=(5, 10),
+                   key="-MONITOR_INFO")]
     ]
 
     tab_group = [
@@ -150,6 +159,7 @@ def generate_gui(layout):
     # Website Variables
 
     # Monitor Variables
+    selected_row = 0
 
     # Create the Window
     window = PySG.Window(VERSION,
@@ -256,9 +266,29 @@ def generate_gui(layout):
                 window['-MONITOR_TABLE-'].update(indexer.sort_table(
                     window['-MONITOR_TABLE-'].get(), event[2][1]))
 
+        if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
+            if event[2][0] != -1 and event[2][1] != -1:
+                selected_row = event[2][0]
+
         if event == "-MONITOR_UPDATE-":
-            # print(window['-MONITOR_TABLE-'].get())
-            max_val = len(window['-MONITOR_TABLE-'].get()) + 1
+            window['-MONITOR_PROG-'].update(0, 1)
+            if selected_row is not None:
+                url = window['-MONITOR_TABLE-'].get()[selected_row]
+                updated = webdriver.update(url)
+                INDEX.update(updated)
+                updates = window['-MONITOR_TABLE-'].get()
+                updates.pop(selected_row)
+                updates.insert(selected_row, updated)
+                window['-MONITOR_TABLE-'].update(
+                    [row for row in indexer.table(INDEX)
+                     if values['-MONITOR_FILTER-'] in " ".join(row)])
+            else:
+                pass
+
+            window['-MONITOR_PROG-'].update(1, 1)
+
+        if event == "-MONITOR_UPDATE_ALL-":
+            max_val = len(window['-MONITOR_TABLE-'].get())
             window['-MONITOR_PROG-'].update(1, max_val)
             for e, url in enumerate(window['-MONITOR_TABLE-'].get()):
                 updated = webdriver.update(url)
@@ -273,7 +303,7 @@ def generate_gui(layout):
                          if values['-MONITOR_FILTER-'] in " ".join(row)])
                 else:
                     pass
-                window['-MONITOR_PROG-'].update(e + 2, max_val)
+                window['-MONITOR_PROG-'].update(e + 1, max_val)
 
         if event == "-MONITOR_INFO-":
             pass
