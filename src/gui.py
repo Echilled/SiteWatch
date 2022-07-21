@@ -8,13 +8,6 @@ import webdriver
 
 VERSION = "SiteWatch v0.1"
 INDEX = {}
-times_url_change_dict = {}
-DOM_CHANGES = {}
-APP_PASSWORD = "happymother123"
-
-
-# DRIVER.minimize_window()
-
 
 def set_layout():
     # All the stuff inside your window.
@@ -165,13 +158,16 @@ def generate_gui(layout):
     window = PySG.Window(VERSION,
                          layout,
                          margins=(10, 5))
+    window_pop_out = None
 
     while True:  # Event Loop
         event, values = window.read()
         print(event, values)
 
         if event == PySG.WIN_CLOSED or event == "Exit":
-            break
+            if window == window_pop_out:  # if closing win 2, mark as closed
+                window_pop_out = None
+                break
 
 ################################################################################
 # WEBSITE EVENTS                                                               #
@@ -317,8 +313,9 @@ def generate_gui(layout):
                                           selected_row]
                     info = webdriver.details(domain,
                                              values["-WEBSITE_FILENAME-"])
-
-                    PySG.popup("URL DETAILS", info)
+                    pyperclip.copy(info)
+                    PySG.popup("URL DETAILS",
+                               info + "Details copied onto your clipboard!",)
 
         if event == "-MONITOR_BACK-":
             window['-WEBSITE_TAB-'].update(disabled=False)

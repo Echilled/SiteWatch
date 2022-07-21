@@ -5,7 +5,6 @@ from selenium.webdriver.chrome.options import Options
 
 import os
 import archiver
-import difflib
 import hashlib
 import datetime
 
@@ -15,6 +14,7 @@ options = Options()
 options.add_argument('--headless')
 options.add_argument('--disable-gpu')
 DRIVER = webdriver.Chrome("chromedriver.exe", options=options)
+
 
 def update(domain):
     DRIVER.get(domain[0])
@@ -59,6 +59,7 @@ def details(domain, loc):
         out.append("Updated: " + domain[2] + "\r\n")
         out.append("Archived: " + old_index[domain[0]][1] + "\r\n")
         out.append("File Size: " + str(size_kb) + "KB" + "\r\n")
+        out.append("\r\n")
         return "".join(out)
     except Exception:
         return "Error Getting Details!"
