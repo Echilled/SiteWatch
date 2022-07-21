@@ -163,9 +163,9 @@ def generate_gui(layout):
         if event == PySG.WIN_CLOSED or event == "Exit":
             break
 
-################################################################################
-# WEBSITE EVENTS                                                               #
-################################################################################
+        ################################################################################
+        # WEBSITE EVENTS                                                               #
+        ################################################################################
 
         if event == "-WEBSITE_VALIDATE-":
             if vad.is_valid_url(values["-WEBSITE_NAME-"]):
@@ -243,31 +243,37 @@ def generate_gui(layout):
                 window["-WEBSITE_INDEX_INFO"]. \
                     update("INDEX FILE NOT FOUND!", text_color="Red2")
 
-################################################################################
-# MONITOR EVENTS                                                               #
-################################################################################
-        if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
-            if event[2][0] == -1 and event[2][1] != -1:
-                window['-MONITOR_TABLE-'].update(values=indexer.sort_table(
-                    window['-MONITOR_TABLE-'].get(), event[2][1]))
-
+        ################################################################################
+        # MONITOR EVENTS                                                               #
+        ################################################################################
         if values['-MONITOR_FILTER-'] != '':
             filter_list = [row for row in indexer.table(INDEX)
                            if values['-MONITOR_FILTER-'] in " ".join(row)]
             window['-MONITOR_TABLE-'].update(filter_list)
-        else:
-            window['-MONITOR_TABLE-'].update(indexer.table(INDEX))
+
+        if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
+            if event[2][0] == -1 and event[2][1] != -1:
+                window['-MONITOR_TABLE-'].update(indexer.sort_table(
+                    window['-MONITOR_TABLE-'].get(), event[2][1]))
 
         if event == "-MONITOR_UPDATE-":
             # print(window['-MONITOR_TABLE-'].get())
-            print(window['-MONITOR_TABLE-'].get())
+            max_val = len(window['-MONITOR_TABLE-'].get()) + 1
+            window['-MONITOR_PROG-'].update(1, max_val)
             for e, url in enumerate(window['-MONITOR_TABLE-'].get()):
                 updated = webdriver.update(url)
-                INDEX.update(updated)
-                filter_list = [row for row in indexer.table(INDEX)
-                               if values['-MONITOR_FILTER-'] in " ".join(row)]
-                window['-MONITOR_TABLE-'].update(filter_list)
-                window.refresh()
+                # check before update
+                if True:
+                    INDEX.update(updated)
+                    updates = window['-MONITOR_TABLE-'].get()
+                    updates.pop(e)
+                    updates.insert(e, updated)
+                    window['-MONITOR_TABLE-'].update(
+                        [row for row in indexer.table(INDEX)
+                         if values['-MONITOR_FILTER-'] in " ".join(row)])
+                else:
+                    pass
+                window['-MONITOR_PROG-'].update(e + 2, max_val)
 
         if event == "-MONITOR_INFO-":
             pass
@@ -277,7 +283,7 @@ def generate_gui(layout):
             window['-TAB_GROUP-'].Widget.select(0)
             window['-MONITOR_TAB-'].update(disabled=True)
 
-################################################################################
+    ################################################################################
 
     window.close()
 

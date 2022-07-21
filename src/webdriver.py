@@ -123,11 +123,9 @@ def show_webpage_code_diff(DOM_CHANGES):
 
 
 def update(domain):
-    print(domain)
     DRIVER.get(domain[0])
     dom = DRIVER.page_source
     web_hash = hashlib.md5(dom.encode("utf-8")).hexdigest().upper()
     date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(DRIVER.title,domain[0], web_hash, date_time)
 
     return {domain[0]: [web_hash, date_time]}
