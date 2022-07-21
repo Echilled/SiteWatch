@@ -1,13 +1,12 @@
 import PySimpleGUI as PySG
-from selenium import webdriver
 import validator as vad
 import pyperclip
 
 import parse_json
 import indexer
+import webdriver
 
 VERSION = "SiteWatch v0.1"
-# DRIVER = webdriver.Chrome("chromedriver.exe")
 INDEX = {}
 times_url_change_dict = {}
 DOM_CHANGES = {}
@@ -92,7 +91,7 @@ def set_layout():
                     alternating_row_color="grey8",
                     auto_size_columns=False,
                     def_col_width=5,
-                    col_widths=[22, 27, 15],
+                    col_widths=[22, 30, 15],
                     expand_x=True,
                     expand_y=True,
                     enable_click_events=True,
@@ -114,6 +113,12 @@ def set_layout():
                      size=(10, 1),
                      pad=(10, 10),
                      key="-MONITOR_INFO-")],
+
+        [PySG.ProgressBar(100,
+                          size=(66, 20),
+                          pad=(10, (0, 0)),
+                          orientation='h',
+                          key='-MONITOR_PROG-')],
 
         [PySG.Button("Back",
                      size=(10, 1),
@@ -247,15 +252,23 @@ def generate_gui(layout):
                     window['-MONITOR_TABLE-'].get(), event[2][1]))
 
         if values['-MONITOR_FILTER-'] != '':
-            filter_list = [row if values['-MONITOR_FILTER-'] in " ".join(row)
-                           else "" for row in indexer.table(INDEX)]
+            filter_list = [row for row in indexer.table(INDEX)
+                           if values['-MONITOR_FILTER-'] in " ".join(row)]
             window['-MONITOR_TABLE-'].update(filter_list)
         else:
             window['-MONITOR_TABLE-'].update(indexer.table(INDEX))
 
         if event == "-MONITOR_UPDATE-":
+            # print(window['-MONITOR_TABLE-'].get())
             print(window['-MONITOR_TABLE-'].get())
-            pass
+            for e, url in enumerate(window['-MONITOR_TABLE-'].get()):
+                updated = webdriver.update(url)
+                INDEX.update(updated)
+                filter_list = [row for row in indexer.table(INDEX)
+                               if values['-MONITOR_FILTER-'] in " ".join(row)]
+                window['-MONITOR_TABLE-'].update(filter_list)
+                window.refresh()
+
         if event == "-MONITOR_INFO-":
             pass
 
