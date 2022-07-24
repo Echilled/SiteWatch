@@ -1,15 +1,19 @@
 import PySimpleGUI as PySG
 import validator as vad
 import pyperclip
+import matplotlib
+matplotlib.use('TkAgg')
 
 import parse_json
 import indexer
 import crawler
+import stats_graph
 import webdriver
-
+figure_agg = None
 
 VERSION = "SiteWatch v0.1"
 INDEX = {}
+
 
 def set_layout():
     # All the stuff inside your window.
@@ -135,6 +139,13 @@ def set_layout():
                    key="-MONITOR_INFO")]
     ]
 
+    stats_layout = [
+        [PySG.Text("Statistics",
+                   size=(30, 1),
+                   font=("Helvetica", 25),
+                   pad=(10, 0), text_color="white")],
+        [PySG.Canvas(key='-STATS_CANVAS-')]]
+
     tab_group = [
         [PySG.TabGroup(
             [[
@@ -146,6 +157,11 @@ def set_layout():
                          monitor_layout,
                          key="-MONITOR_TAB-",
                          disabled=True),
+
+                PySG.Tab("           Statistics           ",
+                         stats_layout,
+                         key="-STATS_TAB-",
+                         disabled=False),
             ]],
             expand_y=True,
             enable_events=True,
@@ -164,8 +180,12 @@ def generate_gui(layout):
     # Create the Window
     window = PySG.Window(VERSION,
                          layout,
-                         margins=(10, 5))
+                         margins=(10, 5),
+                         finalize=True)
     window_pop_out = None
+
+    figure_agg = stats_graph.draw_figure(window['-STATS_CANVAS-'].TKCanvas,
+                                         stats_graph.create_scatterplot())
 
     while True:  # Event Loop
         event, values = window.read()
@@ -175,6 +195,7 @@ def generate_gui(layout):
             if window == window_pop_out:  # if closing win 2, mark as closed
                 window_pop_out = None
                 break
+
 
 ################################################################################
 # WEBSITE EVENTS                                                               #
@@ -302,6 +323,12 @@ def generate_gui(layout):
                 window['-MONITOR_TABLE-'].update(
                     [row for row in indexer.table(INDEX)
                      if values['-MONITOR_FILTER-'] in " ".join(row)])
+
+            if figure_agg:
+                stats_graph.delete_fig_agg(figure_agg)
+                figure_agg = stats_graph.draw_figure(
+                    window['-STATS_CANVAS-'].TKCanvas,
+                    stats_graph.create_scatterplot())
 
             window['-MONITOR_PROG-'].update(1, 1)
 
