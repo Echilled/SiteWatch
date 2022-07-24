@@ -4,7 +4,9 @@ import pyperclip
 
 import parse_json
 import indexer
+import crawler
 import webdriver
+
 
 VERSION = "SiteWatch v0.1"
 INDEX = {}
@@ -110,7 +112,12 @@ def set_layout():
          PySG.Button("Details",
                      size=(10, 1),
                      pad=(10, 10),
-                     key="-MONITOR_DETAILS-")],
+                     key="-MONITOR_DETAILS-"),
+
+         PySG.Button("Save",
+                     size=(10, 1),
+                     pad=(10, 10),
+                     key="-MONITOR_SAVE-")],
 
         [PySG.ProgressBar(100,
                           size=(66, 20),
@@ -189,7 +196,14 @@ def generate_gui(layout):
                                                 "Domain Name",
                                                 text_color="red2")
         if event == "-WEBSITE_CRAWL-":
-            pass
+            url = window["-WEBSITE_LISTBOX-"].get_list_values()[
+                window["-WEBSITE_LISTBOX-"].get_indexes()[0]]
+            a = crawler.Crawler(url)
+            print(a.list)
+            for i in a.list:
+                window["-WEBSITE_NAME-"].update(text_color="green4")
+                indexer.add(INDEX, i)
+                window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
 
         if event == "-WEBSITE_DELETE-":
             try:
