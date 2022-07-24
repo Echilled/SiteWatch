@@ -32,15 +32,17 @@ def compare_hash(domain):
     DRIVER.get(domain[0])
     title = DRIVER.title.replace("|", "")
     new_md5 = domain[1]
+    try:
+        with open("archive/" + title + ".html", "r") as rf:
+            dom = "".join(rf.readlines())
+            old_md5 = hashlib.md5(dom.encode("utf-8")).hexdigest().upper()
 
-    with open("archive/" + title + ".html", "r") as rf:
-        dom = "".join(rf.readlines())
-        old_md5 = hashlib.md5(dom.encode("utf-8")).hexdigest().upper()
-
-        if new_md5 == old_md5:
-            return [True, title, new_md5, old_md5]
-        else:
-            return [False, title, new_md5, old_md5]
+            if new_md5 == old_md5:
+                return [True, title, new_md5, old_md5]
+            else:
+                return [False, title, new_md5, old_md5]
+    except FileNotFoundError:
+        return [False, "File", "Not", "Found"]
 
 
 def details(domain, loc):

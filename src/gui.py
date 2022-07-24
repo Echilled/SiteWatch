@@ -2,7 +2,7 @@ import PySimpleGUI as PySG
 import validator as vad
 import pyperclip
 import matplotlib
-matplotlib.use('TkAgg')
+matplotlib.use("TkAgg")
 
 import parse_json
 import indexer
@@ -26,49 +26,50 @@ def set_layout():
                    pad=(10, 0),
                    text_color="white")],
 
-        [PySG.InputText("Enter a Fully Qualified Domain Name",
-                        size=(65, 10),
-                        pad=(10, 0),
-                        key="-WEBSITE_NAME-"),
+        [PySG.Input("Enter a Fully Qualified Domain Name",
+                    size=(85, 10),
+                    pad=(10, 0),
+                    key="-WEBSITE_NAME-"),
 
          PySG.Button("Validate",
-                     size=(10, 1),
+                     size=(12, 1),
                      key="-WEBSITE_VALIDATE-")],
 
         [PySG.Listbox(values=[],
-                      size=(63, 15),
+                      size=(83, 25),
                       pad=(10, 0),
                       key="-WEBSITE_LISTBOX-"),
 
          PySG.Column([[PySG.Button("Crawl",
-                                   size=(10, 1),
+                                   size=(12, 1),
                                    key="-WEBSITE_CRAWL-")],
                       [PySG.Button("Delete",
-                                   size=(10, 1),
+                                   size=(12, 1),
                                    key="-WEBSITE_DELETE-")],
                       [PySG.Button("Copy",
-                                   size=(10, 1),
+                                   size=(12, 1),
                                    key="-WEBSITE_COPY-")],
                       [PySG.Button("Monitor",
-                                   size=(10, 1),
+                                   size=(12, 1),
                                    button_color="black on red3",
                                    disabled=True,
                                    key="-WEBSITE_MONITOR-")],
                       ])
          ],
 
-        [PySG.InputText(size=(64, 1),
+        [PySG.InputText(size=(84, 1),
                         text_color="grey2",
                         pad=(10, (10, 0)),
                         disabled=True,
+                        enable_events=True,
                         key="-WEBSITE_FILENAME-"),
 
-         PySG.FileBrowse(size=(10, 1),
+         PySG.FileBrowse(size=(12, 1),
                          pad=((5, 0), (5, 0)),
-                         file_types=(('ALL Files', '*.json'),))],
+                         file_types=(("ALL Files", "*.json"),))],
 
         [PySG.Button("Upload",
-                     size=(10, 1),
+                     size=(12, 1),
                      pad=(10, 10),
                      key="-WEBSITE_UPLOAD-"),
 
@@ -82,7 +83,8 @@ def set_layout():
         [PySG.Text("Watcher",
                    size=(30, 1),
                    font=("Helvetica", 25),
-                   pad=(10, 0), text_color="white")],
+                   pad=(10, 0),
+                   text_color="white")],
 
         [PySG.Table(values=[],
                     headings=["Domain", "Hash", "Updated"],
@@ -94,7 +96,7 @@ def set_layout():
                     expand_x=True,
                     expand_y=True,
                     enable_click_events=True,
-                    key='-MONITOR_TABLE-')],
+                    key="-MONITOR_TABLE-")],
 
         [PySG.Text("Filter: ",
                    pad=((10, 0), (10, 0))),
@@ -104,33 +106,33 @@ def set_layout():
                         key="-MONITOR_FILTER-")],
 
         [PySG.Button("Update",
-                     size=(10, 1),
+                     size=(12, 1),
                      pad=(10, 10),
                      key="-MONITOR_UPDATE-"),
 
          PySG.Button("Update All",
-                     size=(10, 1),
+                     size=(12, 1),
                      pad=(10, 10),
                      key="-MONITOR_UPDATE_ALL-"),
 
          PySG.Button("Details",
-                     size=(10, 1),
+                     size=(12, 1),
                      pad=(10, 10),
                      key="-MONITOR_DETAILS-"),
 
          PySG.Button("Save",
-                     size=(10, 1),
+                     size=(12, 1),
                      pad=(10, 10),
                      key="-MONITOR_SAVE-")],
 
         [PySG.ProgressBar(100,
                           size=(66, 20),
                           pad=(10, (0, 0)),
-                          orientation='h',
-                          key='-MONITOR_PROG-')],
+                          orientation="h",
+                          key="-MONITOR_PROG-")],
 
         [PySG.Button("Back",
-                     size=(10, 1),
+                     size=(12, 1),
                      pad=(10, 10),
                      key="-MONITOR_BACK-"),
 
@@ -143,8 +145,13 @@ def set_layout():
         [PySG.Text("Statistics",
                    size=(30, 1),
                    font=("Helvetica", 25),
-                   pad=(10, 0), text_color="white")],
-        [PySG.Canvas(key='-STATS_CANVAS-')]]
+                   pad=(10, 0),
+                   text_color="white")],
+
+        [PySG.Canvas(expand_x=True,
+                     expand_y=True,
+                     pad=(10, 10),
+                     key="-STATS_CANVAS-")]]
 
     tab_group = [
         [PySG.TabGroup(
@@ -165,7 +172,7 @@ def set_layout():
             ]],
             expand_y=True,
             enable_events=True,
-            key='-TAB_GROUP-')]
+            key="-TAB_GROUP-")]
     ]
 
     return tab_group
@@ -184,7 +191,7 @@ def generate_gui(layout):
                          finalize=True)
     window_pop_out = None
 
-    figure_agg = stats_graph.draw_figure(window['-STATS_CANVAS-'].TKCanvas,
+    figure_agg = stats_graph.draw_figure(window["-STATS_CANVAS-"].TKCanvas,
                                          stats_graph.create_scatterplot())
 
     while True:  # Event Loop
@@ -203,9 +210,10 @@ def generate_gui(layout):
 
         if event == "-WEBSITE_VALIDATE-":
             if vad.is_valid_url(values["-WEBSITE_NAME-"]):
-                window["-WEBSITE_NAME-"].update(text_color="green4")
                 indexer.add(INDEX, values["-WEBSITE_NAME-"])
                 window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
+                window["-WEBSITE_INDEX_INFO"].update("VALID DOMAIN ADDED!",
+                                                     text_color="green4")
                 if INDEX.keys():
                     window["-WEBSITE_MONITOR-"].update(
                         button_color="white on green4", disabled=False)
@@ -213,9 +221,8 @@ def generate_gui(layout):
                     window["-WEBSITE_MONITOR-"].update(
                         button_color="white on red3", disabled=True)
             else:
-                window["-WEBSITE_NAME-"].update("Invalid "
-                                                "Domain Name",
-                                                text_color="red2")
+                window["-WEBSITE_INDEX_INFO"].update("INVALID DOMAIN NAME!",
+                                                     text_color="Red2")
         if event == "-WEBSITE_CRAWL-":
             try:
                 url = window["-WEBSITE_LISTBOX-"].get_list_values()[
@@ -253,14 +260,15 @@ def generate_gui(layout):
                 pass
 
         if event == "-WEBSITE_MONITOR-":
+            window["-WEBSITE_INDEX_INFO"].update("", text_color="white")
             for domain in window["-WEBSITE_LISTBOX-"].get_list_values():
                 indexer.add(INDEX, domain)
 
-            window['-MONITOR_TABLE-'].update(values=indexer.table(INDEX))
+            window["-MONITOR_TABLE-"].update(values=indexer.table(INDEX))
 
-            window['-MONITOR_TAB-'].update(disabled=False)
-            window['-TAB_GROUP-'].Widget.select(1)
-            window['-WEBSITE_TAB-'].update(disabled=True)
+            window["-MONITOR_TAB-"].update(disabled=False)
+            window["-TAB_GROUP-"].Widget.select(1)
+            window["-WEBSITE_TAB-"].update(disabled=True)
 
         if event == "-WEBSITE_UPLOAD-":
             try:
@@ -290,28 +298,28 @@ def generate_gui(layout):
 ################################################################################
 # MONITOR EVENTS                                                               #
 ################################################################################
-        if values['-MONITOR_FILTER-'] != '':
+        if values["-MONITOR_FILTER-"] != "":
             filter_list = [row for row in indexer.table(INDEX)
-                           if values['-MONITOR_FILTER-'] in " ".join(row)]
-            window['-MONITOR_TABLE-'].update(filter_list)
+                           if values["-MONITOR_FILTER-"] in " ".join(row)]
+            window["-MONITOR_TABLE-"].update(filter_list)
 
         if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
             if event[2][0] == -1 and event[2][1] != -1:
-                window['-MONITOR_TABLE-'].update(indexer.sort_table(
-                    window['-MONITOR_TABLE-'].get(), event[2][1]))
+                window["-MONITOR_TABLE-"].update(indexer.sort_table(
+                    window["-MONITOR_TABLE-"].get(), event[2][1]))
 
         if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
             if event[2][0] != -1 and event[2][1] != -1:
                 selected_row = event[2][0]
 
         if event == "-MONITOR_UPDATE-":
-            window['-MONITOR_PROG-'].update(0, 1)
+            window["-MONITOR_PROG-"].update(0, 1)
 
             if selected_row is not None:
-                url = window['-MONITOR_TABLE-'].get()[selected_row]
+                url = window["-MONITOR_TABLE-"].get()[selected_row]
                 updated = webdriver.update(url)
                 INDEX.update(updated)
-                updates = window['-MONITOR_TABLE-'].get()
+                updates = window["-MONITOR_TABLE-"].get()
                 updates.pop(selected_row)
                 updates.insert(selected_row, updated)
 
@@ -320,47 +328,47 @@ def generate_gui(layout):
                 else:
                     pass
 
-                window['-MONITOR_TABLE-'].update(
+                window["-MONITOR_TABLE-"].update(
                     [row for row in indexer.table(INDEX)
-                     if values['-MONITOR_FILTER-'] in " ".join(row)])
+                     if values["-MONITOR_FILTER-"] in " ".join(row)])
 
             if figure_agg:
                 stats_graph.delete_fig_agg(figure_agg)
                 figure_agg = stats_graph.draw_figure(
-                    window['-STATS_CANVAS-'].TKCanvas,
+                    window["-STATS_CANVAS-"].TKCanvas,
                     stats_graph.create_scatterplot())
 
-            window['-MONITOR_PROG-'].update(1, 1)
+            window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_UPDATE_ALL-":
-            max_val = len(window['-MONITOR_TABLE-'].get())
-            window['-MONITOR_PROG-'].update(1, max_val)
-            for e, url in enumerate(window['-MONITOR_TABLE-'].get()):
+            max_val = len(window["-MONITOR_TABLE-"].get())
+            window["-MONITOR_PROG-"].update(1, max_val)
+            for e, url in enumerate(window["-MONITOR_TABLE-"].get()):
                 updated = webdriver.update(url)
                 # check before update
                 if True:
                     INDEX.update(updated)
-                    updates = window['-MONITOR_TABLE-'].get()
+                    updates = window["-MONITOR_TABLE-"].get()
                     updates.pop(e)
                     updates.insert(e, updated)
-                    window['-MONITOR_TABLE-'].update(
+                    window["-MONITOR_TABLE-"].update(
                         [row for row in indexer.table(INDEX)
-                         if values['-MONITOR_FILTER-'] in " ".join(row)])
+                         if values["-MONITOR_FILTER-"] in " ".join(row)])
                 else:
                     pass
 
                 if figure_agg:
                     stats_graph.delete_fig_agg(figure_agg)
                     figure_agg = stats_graph.draw_figure(
-                        window['-STATS_CANVAS-'].TKCanvas,
+                        window["-STATS_CANVAS-"].TKCanvas,
                         stats_graph.create_scatterplot())
 
-                window['-MONITOR_PROG-'].update(e + 1, max_val)
+                window["-MONITOR_PROG-"].update(e + 1, max_val)
 
         if event == "-MONITOR_DETAILS-":
             if selected_row is not None:
                 if selected_row is not None:
-                    domain = window['-MONITOR_TABLE-'].get()[
+                    domain = window["-MONITOR_TABLE-"].get()[
                                           selected_row]
                     info = webdriver.details(domain,
                                              values["-WEBSITE_FILENAME-"])
@@ -368,10 +376,13 @@ def generate_gui(layout):
                     PySG.popup("URL DETAILS",
                                info + "Details copied onto your clipboard!",)
 
+        if event == "-MONITOR_SAVE-":
+            print("a")
+
         if event == "-MONITOR_BACK-":
-            window['-WEBSITE_TAB-'].update(disabled=False)
-            window['-TAB_GROUP-'].Widget.select(0)
-            window['-MONITOR_TAB-'].update(disabled=True)
+            window["-WEBSITE_TAB-"].update(disabled=False)
+            window["-TAB_GROUP-"].Widget.select(0)
+            window["-MONITOR_TAB-"].update(disabled=True)
 
 ################################################################################
 
