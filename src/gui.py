@@ -196,14 +196,17 @@ def generate_gui(layout):
                                                 "Domain Name",
                                                 text_color="red2")
         if event == "-WEBSITE_CRAWL-":
-            url = window["-WEBSITE_LISTBOX-"].get_list_values()[
-                window["-WEBSITE_LISTBOX-"].get_indexes()[0]]
-            a = crawler.Crawler(url)
-            print(a.list)
-            for i in a.list:
-                window["-WEBSITE_NAME-"].update(text_color="green4")
-                indexer.add(INDEX, i)
-                window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
+            try:
+                url = window["-WEBSITE_LISTBOX-"].get_list_values()[
+                    window["-WEBSITE_LISTBOX-"].get_indexes()[0]]
+                a = crawler.Crawler(url)
+                print(a.list)
+                for i in a.list:
+                    window["-WEBSITE_NAME-"].update(text_color="green4")
+                    indexer.add(INDEX, i)
+                    window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
+            except IndexError:
+                pass
 
         if event == "-WEBSITE_DELETE-":
             try:
