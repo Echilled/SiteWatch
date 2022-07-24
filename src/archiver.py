@@ -6,13 +6,11 @@ import hashlib
 import datetime
 import json
 import re
-from selenium.webdriver.common.by import By
-import time
 
 options = Options()
 options.add_argument('--headless')
 options.add_argument('--disable-gpu')
-DRIVER = webdriver.Chrome("chromedriver.exe", options=options)
+DRIVER = webdriver.Chrome(options=options)
 times_url_change_dict = {}
 DOM_CHANGES = {}
 APP_PASSWORD = 'happymother123'
@@ -126,20 +124,19 @@ def archive_updater(json_filename): # basically a update all function
     page_source_updater()
 
 
-def page_archiver(url):
+def page_archiver(dom, title):
     # page archiver to be run at the start to get page source for comparison
-
-    DRIVER.get(url)
     # need to get code from URL first so that can compare later if there are any changes,
     # it supports first time archiving also, you can run this on its own to archive html
-    page_source = DRIVER.page_source
-    page_title = format_title(DRIVER.title)
+    page_source = dom
+    page_title = format_title(title)
     if not os.path.isfile("archive\\" + page_title + ".html"):
-        print('First time webpage code archive')
+        #print('First time webpage code archive')
         with open("archive\\" + page_title + ".html", "w+") as file:
             file.write(page_source)
     elif os.path.isfile("archive\\" + page_title + ".html"):
-        print('changed webpage code archived, will use it for comparison later')
+        #print('changed webpage code archived, will use it for comparison
+        # later')
         with open("archive\\" + page_title + "_new.html", "w+") as file:
             file.write(page_source)
 

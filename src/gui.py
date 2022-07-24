@@ -331,13 +331,6 @@ def generate_gui(layout):
                 window["-MONITOR_TABLE-"].update(
                     [row for row in indexer.table(INDEX)
                      if values["-MONITOR_FILTER-"] in " ".join(row)])
-
-            if figure_agg:
-                stats_graph.delete_fig_agg(figure_agg)
-                figure_agg = stats_graph.draw_figure(
-                    window["-STATS_CANVAS-"].TKCanvas,
-                    stats_graph.create_scatterplot())
-
             window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_UPDATE_ALL-":
@@ -356,13 +349,6 @@ def generate_gui(layout):
                          if values["-MONITOR_FILTER-"] in " ".join(row)])
                 else:
                     pass
-
-                if figure_agg:
-                    stats_graph.delete_fig_agg(figure_agg)
-                    figure_agg = stats_graph.draw_figure(
-                        window["-STATS_CANVAS-"].TKCanvas,
-                        stats_graph.create_scatterplot())
-
                 window["-MONITOR_PROG-"].update(e + 1, max_val)
 
         if event == "-MONITOR_DETAILS-":
