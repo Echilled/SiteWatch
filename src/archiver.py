@@ -110,14 +110,15 @@ def update_json(filename, INDEX):  # updating the json values within the json fi
         outfile.write(json_object)
 
 
-def archive_updater(json_filename): # basically a update all function
+def archive_updater(DRIVER, INDEX, json_filename): # basically a update all
+# function
     # with open("WebHash.txt", "w+") as wf:
     print("Updating archive")
     # wf.writelines("\n".join(','.join((key,val)) for (key,val) in INDEX.items()))
     index_change_history(json_filename)
     update_change_history()
-    update_json(json_filename)
-    page_source_updater()
+    update_json(json_filename, INDEX)
+    page_source_updater(DRIVER)
 
 
 def page_archiver(dom, title):

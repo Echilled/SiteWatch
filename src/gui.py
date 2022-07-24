@@ -106,8 +106,8 @@ def set_layout():
                     key="-MONITOR_TABLE-")],
 
         [PySG.Text("Filter: ",
-                   pad=((10, 0), (10, 0))),
-         PySG.InputText(size=(74, 1),
+                   pad=((10, 4), (10, 0))),
+         PySG.InputText(size=(93, 1),
                         pad=(10, (10, 0)),
                         enable_events=True,
                         key="-MONITOR_FILTER-")],
@@ -133,7 +133,7 @@ def set_layout():
                      key="-MONITOR_SAVE-")],
 
         [PySG.ProgressBar(100,
-                          size=(66, 20),
+                          size=(82, 20),
                           pad=(10, (0, 0)),
                           orientation="h",
                           key="-MONITOR_PROG-")],
