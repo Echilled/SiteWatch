@@ -1,8 +1,11 @@
 import PySimpleGUI as PySG
+from selenium import webdriver as wd
+from selenium.webdriver.chrome.options import Options
 import validator as vad
 import pyperclip
 import matplotlib
 matplotlib.use("TkAgg")
+
 
 import parse_json
 import indexer
@@ -11,6 +14,10 @@ import stats_graph
 import webdriver
 figure_agg = None
 
+options = Options()
+options.add_argument('--headless')
+options.add_argument('--disable-gpu')
+DRIVER = wd.Chrome(options=options)
 VERSION = "SiteWatch v0.1"
 INDEX = {}
 
@@ -199,9 +206,8 @@ def generate_gui(layout):
         print(event, values)
 
         if event == PySG.WIN_CLOSED or event == "Exit":
-            if window == window_pop_out:  # if closing win 2, mark as closed
-                window_pop_out = None
-                break
+            DRIVER.close()
+            DRIVER.quit()
 
 
 ################################################################################
@@ -317,13 +323,13 @@ def generate_gui(layout):
 
             if selected_row is not None:
                 url = window["-MONITOR_TABLE-"].get()[selected_row]
-                updated = webdriver.update(url)
+                updated = webdriver.update(DRIVER, url)
                 INDEX.update(updated)
                 updates = window["-MONITOR_TABLE-"].get()
                 updates.pop(selected_row)
                 updates.insert(selected_row, updated)
 
-                if webdriver.compare_hash(url)[0]:
+                if webdriver.compare_hash(DRIVER, url)[0]:
                     pass
                 else:
                     pass
@@ -337,7 +343,7 @@ def generate_gui(layout):
             max_val = len(window["-MONITOR_TABLE-"].get())
             window["-MONITOR_PROG-"].update(1, max_val)
             for e, url in enumerate(window["-MONITOR_TABLE-"].get()):
-                updated = webdriver.update(url)
+                updated = webdriver.update(DRIVER, url)
                 # check before update
                 if True:
                     INDEX.update(updated)
@@ -356,7 +362,8 @@ def generate_gui(layout):
                 if selected_row is not None:
                     domain = window["-MONITOR_TABLE-"].get()[
                                           selected_row]
-                    info = webdriver.details(domain,
+                    info = webdriver.details(DRIVER,
+                                             domain,
                                              values["-WEBSITE_FILENAME-"])
                     pyperclip.copy(info)
                     PySG.popup("URL DETAILS",

@@ -7,16 +7,12 @@ import datetime
 import json
 import re
 
-options = Options()
-options.add_argument('--headless')
-options.add_argument('--disable-gpu')
-DRIVER = webdriver.Chrome(options=options)
 times_url_change_dict = {}
 DOM_CHANGES = {}
 APP_PASSWORD = 'happymother123'
 
 
-def web_hash_checker(url, INDEX):
+def web_hash_checker(DRIVER, url, INDEX):
     print(url)
     DRIVER.get(url)
     ad_blocker()
@@ -69,7 +65,7 @@ def update_change_history():
     # print(times_url_change_dict)
 
 
-def page_source_updater():  # Update page source archive only for urls that changed
+def page_source_updater(DRIVER,):  # Update page source archive only for urls that changed
     for key in list(DOM_CHANGES.keys()):  # Archive web page code
         # print(DOM_CHANGES.keys())
         DRIVER.get(key)
@@ -185,7 +181,8 @@ def Diff(old_file, new_file):
         print(e)
 
 
-def Diff_url(url):  # same diff function but using url as arguement instead of 2 files
+def Diff_url(DRIVER, url):  # same diff function but using url as arguement
+    # instead of 2 files
     new_changed_list = []
     changes_list = []
     DRIVER.get(url)
@@ -268,7 +265,7 @@ def page_changes_listing():
 # print(decision)
 
 
-def ad_blocker():
+def ad_blocker(DRIVER,):
     all_iframes = DRIVER.find_elements(By.TAG_NAME, "iframe")
     if len(all_iframes) > 0:
         print("Ad Found, changes detected may contain ads\n")
