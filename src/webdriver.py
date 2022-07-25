@@ -13,6 +13,7 @@ import parse_json
 
 def update(DRIVER, domain):
     DRIVER.get(domain[0])
+    archiver.ad_blocker(DRIVER)
     dom = DRIVER.page_source
     title = DRIVER.title.replace("|", "")
 
@@ -20,6 +21,7 @@ def update(DRIVER, domain):
     date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     archiver.page_archiver(dom, title)
+    archiver.Diff_url(DRIVER, domain[0])
     return {domain[0]: [web_hash, date_time]}
 
 
