@@ -1,6 +1,8 @@
 import PySimpleGUI as PySG
 from selenium import webdriver as wd
 from selenium.webdriver.chrome.options import Options
+
+import archiver
 import validator as vad
 import pyperclip
 import matplotlib
@@ -34,8 +36,9 @@ def set_layout():
                    text_color="white")],
 
         [PySG.Input("Enter a Fully Qualified Domain Name",
-                    size=(85, 10),
+                    size=(0, 10),
                     pad=(10, 0),
+                    expand_x=True,
                     key="-WEBSITE_NAME-"),
 
          PySG.Button("Validate",
@@ -43,8 +46,9 @@ def set_layout():
                      key="-WEBSITE_VALIDATE-")],
 
         [PySG.Listbox(values=[],
-                      size=(83, 25),
+                      size=(0, 25),
                       pad=(10, 0),
+                      expand_x=True,
                       key="-WEBSITE_LISTBOX-"),
 
          PySG.Column([[PySG.Button("Crawl",
@@ -64,10 +68,11 @@ def set_layout():
                       ])
          ],
 
-        [PySG.InputText(size=(84, 1),
+        [PySG.InputText(size=(0, 1),
                         text_color="grey2",
                         pad=(10, (10, 0)),
                         disabled=True,
+                        expand_x=True,
                         enable_events=True,
                         key="-WEBSITE_FILENAME-"),
 
@@ -82,7 +87,7 @@ def set_layout():
 
          PySG.Text("No index file uploaded...",
                    pad=(5, 10),
-                   key="-WEBSITE_INDEX_INFO")],
+                   key="-WEBSITE_INFO")],
     ]
 
     monitor_layout = [
@@ -107,8 +112,9 @@ def set_layout():
 
         [PySG.Text("Filter: ",
                    pad=((10, 4), (10, 0))),
-         PySG.InputText(size=(93, 1),
+         PySG.InputText(size=(0, 10),
                         pad=(10, (10, 0)),
+                        expand_x=True,
                         enable_events=True,
                         key="-MONITOR_FILTER-")],
 
@@ -145,7 +151,7 @@ def set_layout():
 
          PySG.Text("No Task Assigned...",
                    pad=(5, 10),
-                   key="-MONITOR_INFO")]
+                   key="-MONITOR_INFO-")]
     ]
 
     stats_layout = [
@@ -218,7 +224,7 @@ def generate_gui(layout):
             if vad.is_valid_url(values["-WEBSITE_NAME-"]):
                 indexer.add(INDEX, values["-WEBSITE_NAME-"])
                 window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
-                window["-WEBSITE_INDEX_INFO"].update("VALID DOMAIN ADDED!",
+                window["-WEBSITE_INFO"].update("VALID DOMAIN ADDED!",
                                                      text_color="green4")
                 if INDEX.keys():
                     window["-WEBSITE_MONITOR-"].update(
@@ -227,7 +233,7 @@ def generate_gui(layout):
                     window["-WEBSITE_MONITOR-"].update(
                         button_color="white on red3", disabled=True)
             else:
-                window["-WEBSITE_INDEX_INFO"].update("INVALID DOMAIN NAME!",
+                window["-WEBSITE_INFO"].update("INVALID DOMAIN NAME!",
                                                      text_color="Red2")
         if event == "-WEBSITE_CRAWL-":
             try:
@@ -266,7 +272,7 @@ def generate_gui(layout):
                 pass
 
         if event == "-WEBSITE_MONITOR-":
-            window["-WEBSITE_INDEX_INFO"].update("", text_color="white")
+            window["-WEBSITE_INFO"].update("", text_color="white")
             for domain in window["-WEBSITE_LISTBOX-"].get_list_values():
                 indexer.add(INDEX, domain)
 
@@ -285,7 +291,7 @@ def generate_gui(layout):
                         values["-WEBSITE_FILENAME-"]))
 
                     window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
-                    window["-WEBSITE_INDEX_INFO"]. \
+                    window["-WEBSITE_INFO"]. \
                         update("VALID INDEX FILE UPLOADED!",
                                text_color="green4")
                     if INDEX.keys():
@@ -295,10 +301,10 @@ def generate_gui(layout):
                         window["-WEBSITE_MONITOR-"].update(
                             button_color="red3", disabled=True)
                 else:
-                    window["-WEBSITE_INDEX_INFO"]. \
+                    window["-WEBSITE_INFO"]. \
                         update("INVALID INDEX FILE!", text_color="Red2")
             except FileNotFoundError:
-                window["-WEBSITE_INDEX_INFO"]. \
+                window["-WEBSITE_INFO"]. \
                     update("INDEX FILE NOT FOUND!", text_color="Red2")
 
 ################################################################################
@@ -370,7 +376,11 @@ def generate_gui(layout):
                                info + "Details copied onto your clipboard!",)
 
         if event == "-MONITOR_SAVE-":
-            print("a")
+            archiver.archive_updater(DRIVER,
+                                     INDEX,
+                                     values["-WEBSITE_FILENAME-"])
+            window["-MONITOR_INFO-"].update("JSON ARCHIVE UPDATED!",
+                                                 text_color="green4")
 
         if event == "-MONITOR_BACK-":
             window["-WEBSITE_TAB-"].update(disabled=False)
