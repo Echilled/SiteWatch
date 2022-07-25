@@ -7,6 +7,8 @@ import datetime
 import json
 import re
 
+from selenium.webdriver.common.by import By
+
 times_url_change_dict = {}
 DOM_CHANGES = {}
 APP_PASSWORD = 'happymother123'
@@ -92,9 +94,8 @@ def update_json(filename, INDEX):  # updating the json values within the json fi
     JSON_values = []  # Archive web page hash
     temp_dict = {'URLs': {}}
     for key, val in INDEX.items():  # using the index global variable
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         changes_number = times_url_change_dict[key]  # using the times_url_change_dict global variable
-        JSON_tuple = (key, val[0], now, changes_number)
+        JSON_tuple = (key, val[0], val[1], changes_number)
         JSON_values.append(JSON_tuple)
     for val in JSON_values:
         JSON_dict = json_construct(*val)
