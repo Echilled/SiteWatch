@@ -22,6 +22,7 @@ options.add_argument('--disable-gpu')
 DRIVER = wd.Chrome(options=options)
 VERSION = "SiteWatch v0.1"
 INDEX = {}
+ROW_COLOR = []
 
 
 def set_layout():
@@ -314,11 +315,13 @@ def generate_gui(layout):
             filter_list = [row for row in indexer.table(INDEX)
                            if values["-MONITOR_FILTER-"] in " ".join(row)]
             window["-MONITOR_TABLE-"].update(filter_list)
+            window["-MONITOR_TABLE-"].Update(row_colors=ROW_COLOR)
 
         if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
             if event[2][0] == -1 and event[2][1] != -1:
                 window["-MONITOR_TABLE-"].update(indexer.sort_table(
                     window["-MONITOR_TABLE-"].get(), event[2][1]))
+                window['-MONITOR_TABLE-'].Update(row_colors=ROW_COLOR)
 
         if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
             if event[2][0] != -1 and event[2][1] != -1:
@@ -331,18 +334,18 @@ def generate_gui(layout):
                 url = window["-MONITOR_TABLE-"].get()[selected_row]
                 updated = webdriver.update(DRIVER, url)
                 INDEX.update(updated)
-                updates = window["-MONITOR_TABLE-"].get()
-                updates.pop(selected_row)
-                updates.insert(selected_row, updated)
-
-                if webdriver.compare_hash(DRIVER, url)[0]:
-                    pass
-                else:
-                    pass
-
                 window["-MONITOR_TABLE-"].update(
                     [row for row in indexer.table(INDEX)
                      if values["-MONITOR_FILTER-"] in " ".join(row)])
+                url = window["-MONITOR_TABLE-"].get()[selected_row]
+                print(url)
+                if webdriver.compare_hash(DRIVER, url)[0]:
+                    ROW_COLOR.append([selected_row, 'green4'])
+                    window['-MONITOR_TABLE-'].Update(row_colors=ROW_COLOR)
+                else:
+                    ROW_COLOR.append([selected_row,'red4'])
+                    window['-MONITOR_TABLE-'].Update(row_colors=ROW_COLOR)
+
             window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_UPDATE_ALL-":
