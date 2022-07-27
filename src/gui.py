@@ -157,7 +157,7 @@ def set_layout():
 
         [PySG.ProgressBar(100,
                           size=(82, 20),
-                          pad=(10, (0, 0)),
+                          pad=((10, 0), (0, 0)),
                           orientation="h",
                           key="-MONITOR_PROG-")],
 
@@ -183,21 +183,33 @@ def set_layout():
                      pad=(10, 10),
                      key="-STATS_CANVAS-")]]
 
+    recovery_layout = [
+        [PySG.Text("Recovery",
+                   size=(30, 1),
+                   font=("Helvetica", 25),
+                   pad=(10, 0),
+                   text_color="white")]]
+
     tab_group = [
         [PySG.TabGroup(
             [[
-                PySG.Tab("           Website           ",
+                PySG.Tab("                    Website                    ",
                          website_layout,
                          key="-WEBSITE_TAB-"),
 
-                PySG.Tab("           Monitor           ",
+                PySG.Tab("                    Monitor                    ",
                          monitor_layout,
                          key="-MONITOR_TAB-",
                          disabled=True),
 
-                PySG.Tab("           Statistics           ",
+                PySG.Tab("                    Statistics                    ",
                          stats_layout,
                          key="-STATS_TAB-",
+                         disabled=False),
+
+                PySG.Tab("                    Recovery                    ",
+                         recovery_layout,
+                         key="-RECOVERY_TAB-",
                          disabled=False),
             ]],
             expand_y=True,
