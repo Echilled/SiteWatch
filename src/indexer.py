@@ -42,3 +42,11 @@ def sort_table(INDEX, column):
                       key=operator.itemgetter(column),
                       reverse=reversed_sort)
 
+
+def set_row_color(INDEX, ROW_COLOR):
+    out = []
+    for row, url in enumerate(INDEX):
+        if url[0] in ROW_COLOR:
+            out.append([row, ROW_COLOR[url[0]]])
+    print(out)
+    return out

@@ -94,7 +94,10 @@ def update_json(filename, INDEX):  # updating the json values within the json fi
     JSON_values = []  # Archive web page hash
     temp_dict = {'URLs': {}}
     for key, val in INDEX.items():  # using the index global variable
-        changes_number = times_url_change_dict[key]  # using the times_url_change_dict global variable
+        if key in times_url_change_dict:
+            changes_number = times_url_change_dict[key]  # using the times_url_change_dict global variable
+        else:
+            changes_number = 0
         JSON_tuple = (key, val[0], val[1], changes_number)
         JSON_values.append(JSON_tuple)
     for val in JSON_values:

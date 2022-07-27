@@ -2,23 +2,47 @@
     "URLs": {
         "https://time.gov": {
             "properties": {
-                "hash": "C105FC9C3A4B393EB25D817B45EE1083",
-                "archival_date": "2022-07-25 21:43:38",
-                "number of times URL content change": 18
+                "hash": "E0ECAD5947CFD10480113DD5619A03ED",
+                "archival_date": "2022-07-27 18:57:54",
+                "number of times URL content change": 20
             }
         },
         "https://www.ledr.com/colours/white.htm": {
             "properties": {
                 "hash": "17D536F33EA589B49DE723744AC676DC",
-                "archival_date": "2022-07-25 21:43:41",
-                "number of times URL content change": 1
+                "archival_date": "2022-07-27 18:58:00",
+                "number of times URL content change": 3
             }
         },
         "http://randomcolour.com": {
             "properties": {
-                "hash": "985163855FED4C62D3A3BD1CFDFAB75D",
-                "archival_date": "2022-07-25 21:43:42",
-                "number of times URL content change": 18
+                "hash": "1EC9B2B23275B6C320314D5644E905DF",
+                "archival_date": "2022-07-27 18:58:01",
+                "number of times URL content change": 20
+            }
+        }
+    }
+}{
+    "URLs": {
+        "https://time.gov": {
+            "properties": {
+                "hash": "E0ECAD5947CFD10480113DD5619A03ED",
+                "archival_date": "2022-07-27 18:57:54",
+                "number of times URL content change": 20
+            }
+        },
+        "https://www.ledr.com/colours/white.htm": {
+            "properties": {
+                "hash": "17D536F33EA589B49DE723744AC676DC",
+                "archival_date": "2022-07-27 18:58:00",
+                "number of times URL content change": 3
+            }
+        },
+        "http://randomcolour.com": {
+            "properties": {
+                "hash": "1EC9B2B23275B6C320314D5644E905DF",
+                "archival_date": "2022-07-27 18:58:01",
+                "number of times URL content change": 20
             }
         }
     }
