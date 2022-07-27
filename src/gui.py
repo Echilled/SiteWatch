@@ -6,9 +6,6 @@ import archiver
 import validator as vad
 import pyperclip
 import matplotlib
-
-matplotlib.use("TkAgg")
-
 import parse_json
 import indexer
 import crawler
@@ -16,7 +13,7 @@ import stats_graph
 import webdriver
 
 figure_agg = None
-
+matplotlib.use("TkAgg")
 options = Options()
 options.add_argument("--headless")
 options.add_argument("--disable-gpu")
