@@ -437,6 +437,7 @@ def generate_gui(layout):
 
         if event == "-MONITOR_SAVE-":
             print(INDEX)
+            print(values["-WEBSITE_FILENAME-"])
             window["-MONITOR_PROG-"].update(0, 1)
             archiver.archive_updater(DRIVER,
                                      INDEX,
