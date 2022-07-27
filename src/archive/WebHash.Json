@@ -2,23 +2,23 @@
     "URLs": {
         "https://time.gov": {
             "properties": {
-                "hash": "22BFF4DE98F930E58CDF392849D659ED",
-                "archival_date": "2022-07-15 16:09:30",
-                "number of times URL content change": 17
+                "hash": "C105FC9C3A4B393EB25D817B45EE1083",
+                "archival_date": "2022-07-25 21:43:38",
+                "number of times URL content change": 18
             }
         },
         "https://www.ledr.com/colours/white.htm": {
             "properties": {
                 "hash": "17D536F33EA589B49DE723744AC676DC",
-                "archival_date": "2022-03-10 18:09:57",
-                "number of times URL content change": 0
+                "archival_date": "2022-07-25 21:43:41",
+                "number of times URL content change": 1
             }
         },
         "http://randomcolour.com": {
             "properties": {
-                "hash": "450980C3883968772F4BE83A438A39D6",
-                "archival_date": "2022-01-05 12:19:57",
-                "number of times URL content change": 17
+                "hash": "985163855FED4C62D3A3BD1CFDFAB75D",
+                "archival_date": "2022-07-25 21:43:42",
+                "number of times URL content change": 18
             }
         }
     }

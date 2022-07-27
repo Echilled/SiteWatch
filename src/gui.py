@@ -6,23 +6,27 @@ import archiver
 import validator as vad
 import pyperclip
 import matplotlib
-matplotlib.use("TkAgg")
 
+matplotlib.use("TkAgg")
 
 import parse_json
 import indexer
 import crawler
 import stats_graph
 import webdriver
+
 figure_agg = None
 
 options = Options()
-options.add_argument('--headless')
-options.add_argument('--disable-gpu')
+options.add_argument("--headless")
+options.add_argument("--disable-gpu")
 DRIVER = wd.Chrome(options=options)
 VERSION = "SiteWatch v0.1"
 INDEX = {}
-ROW_COLOR = []
+ROW_COLOR = {}
+RED = "red4"
+GREEN = "green4"
+WHITE = "white"
 
 
 def set_layout():
@@ -216,7 +220,6 @@ def generate_gui(layout):
             DRIVER.close()
             DRIVER.quit()
 
-
 ################################################################################
 # WEBSITE EVENTS                                                               #
 ################################################################################
@@ -226,7 +229,7 @@ def generate_gui(layout):
                 indexer.add(INDEX, values["-WEBSITE_NAME-"])
                 window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
                 window["-WEBSITE_INFO"].update("VALID DOMAIN ADDED!",
-                                                     text_color="green4")
+                                               text_color=GREEN)
                 if INDEX.keys():
                     window["-WEBSITE_MONITOR-"].update(
                         button_color="white on green4", disabled=False)
@@ -235,7 +238,7 @@ def generate_gui(layout):
                         button_color="white on red3", disabled=True)
             else:
                 window["-WEBSITE_INFO"].update("INVALID DOMAIN NAME!",
-                                                     text_color="Red2")
+                                               text_color=RED)
         if event == "-WEBSITE_CRAWL-":
             try:
                 url = window["-WEBSITE_LISTBOX-"].get_list_values()[
@@ -294,19 +297,21 @@ def generate_gui(layout):
                     window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
                     window["-WEBSITE_INFO"]. \
                         update("VALID INDEX FILE UPLOADED!",
-                               text_color="green4")
+                               text_color=GREEN)
                     if INDEX.keys():
                         window["-WEBSITE_MONITOR-"].update(
-                            button_color="white on green4", disabled=False)
+                            button_color="white on green4",
+                            disabled=False)
                     else:
                         window["-WEBSITE_MONITOR-"].update(
-                            button_color="red3", disabled=True)
+                            button_color=RED,
+                            disabled=True)
                 else:
                     window["-WEBSITE_INFO"]. \
-                        update("INVALID INDEX FILE!", text_color="Red2")
+                        update("INVALID INDEX FILE!", text_color=RED)
             except FileNotFoundError:
                 window["-WEBSITE_INFO"]. \
-                    update("INDEX FILE NOT FOUND!", text_color="Red2")
+                    update("INDEX FILE NOT FOUND!", text_color=RED)
 
 ################################################################################
 # MONITOR EVENTS                                                               #
@@ -321,7 +326,7 @@ def generate_gui(layout):
             if event[2][0] == -1 and event[2][1] != -1:
                 window["-MONITOR_TABLE-"].update(indexer.sort_table(
                     window["-MONITOR_TABLE-"].get(), event[2][1]))
-                window['-MONITOR_TABLE-'].Update(row_colors=ROW_COLOR)
+                window["-MONITOR_TABLE-"].Update(row_colors=ROW_COLOR)
 
         if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
             if event[2][0] != -1 and event[2][1] != -1:
@@ -340,11 +345,11 @@ def generate_gui(layout):
                 url = window["-MONITOR_TABLE-"].get()[selected_row]
                 print(url)
                 if webdriver.compare_hash(DRIVER, url)[0]:
-                    ROW_COLOR.append([selected_row, 'green4'])
-                    window['-MONITOR_TABLE-'].Update(row_colors=ROW_COLOR)
+                    ROW_COLOR.append([selected_row, GREEN])
+                    window["-MONITOR_TABLE-"].Update(row_colors=ROW_COLOR)
                 else:
-                    ROW_COLOR.append([selected_row,'red4'])
-                    window['-MONITOR_TABLE-'].Update(row_colors=ROW_COLOR)
+                    ROW_COLOR.append([selected_row, RED])
+                    window["-MONITOR_TABLE-"].Update(row_colors=ROW_COLOR)
 
             window["-MONITOR_PROG-"].update(1, 1)
 
@@ -370,20 +375,20 @@ def generate_gui(layout):
             if selected_row is not None:
                 if selected_row is not None:
                     domain = window["-MONITOR_TABLE-"].get()[
-                                          selected_row]
+                        selected_row]
                     info = webdriver.details(DRIVER,
                                              domain,
                                              values["-WEBSITE_FILENAME-"])
                     pyperclip.copy(info)
                     PySG.popup("URL DETAILS",
-                               info + "Details copied onto your clipboard!",)
+                               info + "Details copied onto your clipboard!", )
 
         if event == "-MONITOR_SAVE-":
             archiver.archive_updater(DRIVER,
                                      INDEX,
                                      values["-WEBSITE_FILENAME-"])
             window["-MONITOR_INFO-"].update("JSON ARCHIVE UPDATED!",
-                                                 text_color="green4")
+                                            text_color="green4")
 
         if event == "-MONITOR_BACK-":
             window["-WEBSITE_TAB-"].update(disabled=False)
