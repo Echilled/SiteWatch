@@ -24,8 +24,8 @@ DRIVER = wd.Chrome(options=options)
 VERSION = "SiteWatch v0.1"
 INDEX = {}
 ROW_COLOR = {}
-RED = "red4"
-GREEN = "green4"
+RED = "red3"
+GREEN = "green3"
 WHITE = "white on "
 
 
@@ -42,12 +42,13 @@ def set_layout():
 
         [PySG.Input("Enter a Fully Qualified Domain Name",
                     size=(0, 10),
-                    pad=(10, 0),
+                    pad=(10, 10),
                     expand_x=True,
                     key="-WEBSITE_NAME-"),
 
          PySG.Button("Validate",
                      size=(12, 1),
+                     pad=((5, 10), (5, 0)),
                      key="-WEBSITE_VALIDATE-")],
 
         [PySG.Listbox(values=[],
@@ -82,15 +83,15 @@ def set_layout():
                         key="-WEBSITE_FILENAME-"),
 
          PySG.FileBrowse(size=(12, 1),
-                         pad=((5, 0), (5, 0)),
+                         pad=((5, 10), (5, 0)),
                          file_types=(("ALL Files", "*.json"),))],
 
         [PySG.Button("Upload",
-                     size=(12, 1),
+                     size=(14, 1),
                      pad=(10, 10),
                      key="-WEBSITE_UPLOAD-"),
 
-         PySG.Text("No index file uploaded...",
+         PySG.Text("NO TASK ASSIGNED...",
                    pad=(5, 10),
                    key="-WEBSITE_INFO")],
     ]
@@ -125,22 +126,32 @@ def set_layout():
                         key="-MONITOR_FILTER-")],
 
         [PySG.Button("Update",
-                     size=(12, 1),
+                     size=(14, 1),
                      pad=(10, 10),
                      key="-MONITOR_UPDATE-"),
 
          PySG.Button("Update All",
-                     size=(12, 1),
+                     size=(14, 1),
                      pad=(10, 10),
                      key="-MONITOR_UPDATE_ALL-"),
 
          PySG.Button("Details",
-                     size=(12, 1),
+                     size=(14, 1),
                      pad=(10, 10),
                      key="-MONITOR_DETAILS-"),
 
+         PySG.FileBrowse("Whitelist",
+                         size=(14, 1),
+                         pad=(10, 10),
+                         file_types=(("ALL Files", "*.txt"),)),
+
+         PySG.Button("Report",
+                     size=(14, 1),
+                     pad=(10, 10),
+                     key="-MONITOR_REPORT-"),
+
          PySG.Button("Save",
-                     size=(12, 1),
+                     size=(14, 1),
                      pad=(10, 10),
                      key="-MONITOR_SAVE-")],
 
@@ -151,11 +162,11 @@ def set_layout():
                           key="-MONITOR_PROG-")],
 
         [PySG.Button("Back",
-                     size=(12, 1),
+                     size=(14, 1),
                      pad=(10, 10),
                      key="-MONITOR_BACK-"),
 
-         PySG.Text("No Task Assigned...",
+         PySG.Text("NO TASK ASSIGNED...",
                    pad=(5, 10),
                    key="-MONITOR_INFO-")]
     ]
@@ -251,7 +262,8 @@ def generate_gui(layout):
                     indexer.add(INDEX, i)
                     window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
             except IndexError:
-                pass
+                window["-WEBSITE_INFO"].update("NO ROW SELECTED!",
+                                               text_color=RED)
 
         if event == "-WEBSITE_DELETE-":
             try:
@@ -260,6 +272,8 @@ def generate_gui(layout):
                                [window["-WEBSITE_LISTBOX-"].get_indexes()[0]])
 
                 window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
+                window["-WEBSITE_INFO"].update("DOMAIN DELETED!",
+                                               text_color=GREEN)
                 if INDEX.keys():
                     window["-WEBSITE_MONITOR-"].update(
                         button_color=GREEN, disabled=False)
@@ -267,14 +281,18 @@ def generate_gui(layout):
                     window["-WEBSITE_MONITOR-"].update(
                         button_color=RED, disabled=True)
             except IndexError:
-                pass
+                window["-WEBSITE_INFO"].update("NO ROW SELECTED!",
+                                               text_color=RED)
 
         if event == "-WEBSITE_COPY-":
             try:
                 pyperclip.copy(window["-WEBSITE_LISTBOX-"].get_list_values()
                                [window["-WEBSITE_LISTBOX-"].get_indexes()[0]])
+                window["-WEBSITE_INFO"].update("DOMAIN COPIED TO CLIPBOARD!",
+                                               text_color=GREEN)
             except IndexError:
-                pass
+                window["-WEBSITE_INFO"].update("NO ROW SELECTED!",
+                                               text_color=RED)
 
         if event == "-WEBSITE_MONITOR-":
             window["-WEBSITE_INFO"].update("", text_color="white")
@@ -286,6 +304,8 @@ def generate_gui(layout):
             window["-MONITOR_TAB-"].update(disabled=False)
             window["-TAB_GROUP-"].Widget.select(1)
             window["-WEBSITE_TAB-"].update(disabled=True)
+            window["-WEBSITE_INFO"].update("PROCEED TO MONITOR!",
+                                           text_color=GREEN)
 
         if event == "-WEBSITE_UPLOAD-":
             try:
@@ -358,6 +378,9 @@ def generate_gui(layout):
                     row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
                                                      .get(),
                                                      ROW_COLOR))
+            else:
+                window["-MONITOR_INFO-"].update("NO ROW SELECTED!",
+                                                text_color=RED)
             window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_UPDATE_ALL-":
@@ -383,24 +406,30 @@ def generate_gui(layout):
                 window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
 
         if event == "-MONITOR_DETAILS-":
+            window["-MONITOR_PROG-"].update(0, 1)
             if selected_row is not None:
-                if selected_row is not None:
-                    domain = window["-MONITOR_TABLE-"].get()[
-                        selected_row]
-                    info = webdriver.details(DRIVER,
-                                             domain,
-                                             values["-WEBSITE_FILENAME-"])
-                    pyperclip.copy(info)
-                    PySG.popup("URL DETAILS",
-                               info + "Details copied onto your clipboard!", )
+                domain = window["-MONITOR_TABLE-"].get()[
+                    selected_row]
+                info = webdriver.details(DRIVER,
+                                         domain,
+                                         values["-WEBSITE_FILENAME-"])
+                pyperclip.copy(info)
+                PySG.popup("URL DETAILS",
+                           info + "Details copied onto your clipboard!", )
+            else:
+                window["-MONITOR_INFO-"].update("NO ROW SELECTED!",
+                                                text_color=RED)
+            window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_SAVE-":
             print(INDEX)
+            window["-MONITOR_PROG-"].update(0, 1)
             archiver.archive_updater(DRIVER,
                                      INDEX,
                                      values["-WEBSITE_FILENAME-"])
             window["-MONITOR_INFO-"].update("JSON ARCHIVE UPDATED!",
-                                            text_color="green4")
+                                            text_color=GREEN)
+            window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_BACK-":
             window["-WEBSITE_TAB-"].update(disabled=False)
@@ -411,6 +440,8 @@ def generate_gui(layout):
 ################################################################################
 # TESTS                                                                        #
 ################################################################################
+
+
 def test_func():
     return True
 
