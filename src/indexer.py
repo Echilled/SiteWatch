@@ -48,5 +48,4 @@ def set_row_color(INDEX, ROW_COLOR):
     for row, url in enumerate(INDEX):
         if url[0] in ROW_COLOR:
             out.append([row, ROW_COLOR[url[0]]])
-    print(out)
     return out
