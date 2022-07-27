@@ -10,7 +10,7 @@ fonttools==4.34.4
 h11==0.13.0
 idna==3.3
 kiwisolver==1.4.4
-lxml==4.8.0
+lxml==4.9.1
 matplotlib==3.5.2
 numpy==1.23.1
 outcome==1.2.0

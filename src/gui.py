@@ -24,8 +24,8 @@ DRIVER = wd.Chrome(options=options)
 VERSION = "SiteWatch v0.1"
 INDEX = {}
 ROW_COLOR = {}
-RED = "red3"
-GREEN = "green3"
+RED = "red4"
+GREEN = "green4"
 WHITE = "white on "
 
 
@@ -256,11 +256,16 @@ def generate_gui(layout):
                 url = window["-WEBSITE_LISTBOX-"].get_list_values()[
                     window["-WEBSITE_LISTBOX-"].get_indexes()[0]]
                 a = crawler.Crawler(url)
-                print(a.list)
-                for i in a.list:
-                    window["-WEBSITE_NAME-"].update(text_color="green4")
-                    indexer.add(INDEX, i)
-                    window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
+                try:
+                    for i in a.list:
+                        window["-WEBSITE_NAME-"].update(text_color="green4")
+                        indexer.add(INDEX, i)
+                        window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
+                        window["-WEBSITE_INFO"].update("DOMAIN CRAWLED!",
+                                                       text_color=GREEN)
+                except Exception:
+                    window["-WEBSITE_INFO"].update("DOMAIN CRAWL FAILED!",
+                                                   text_color=RED)
             except IndexError:
                 window["-WEBSITE_INFO"].update("NO ROW SELECTED!",
                                                text_color=RED)
