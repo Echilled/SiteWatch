@@ -6,9 +6,8 @@ import hashlib
 import datetime
 import json
 import re
+
 from selenium.webdriver.common.by import By
-import time
-from urllib.parse import urlparse
 
 times_url_change_dict = {}
 DOM_CHANGES = {}
@@ -63,7 +62,8 @@ def update_change_history():
     # updating the count in the global variable based on url as the key every time it changes
     # print(times_url_change_dict)
     for key in times_url_change_dict.keys():
-        if key in DOM_CHANGES:
+        if key in DOM_CHANGES and DOM_CHANGES[key]:
+            print(DOM_CHANGES[key])
             times_url_change_dict[key] = times_url_change_dict.get(key, 0) + 1
     # print(times_url_change_dict)
 
@@ -91,7 +91,15 @@ def json_construct(id, hash, date, times_it_changed):
     return website_dic
 
 
+# def update_json(filename, data_dict):
+#     with open(filename, "w") as outfile:
+#         json_object = json.dumps(data_dict, indent=4)
+#         outfile.write(json_object)
+
+
 def update_json(filename, INDEX):  # updating the json values within the json file and writing out to it
+    #print(times_url_change_dict)
+    #print(DOM_CHANGES)
     try:
         JSON_values = []  # Archive web page hash
         temp_dict = {'URLs': {}}
@@ -107,7 +115,7 @@ def update_json(filename, INDEX):  # updating the json values within the json fi
             temp_dict['URLs'].update(JSON_dict)
         with open(filename, "r+") as rfile: # parsing it previous values, then updating it then write out to file
             archived_history = json.load(rfile)
-            for key, value in archived_history['URLs'].items():
+            for key, value in temp_dict['URLs'].items():
                 archived_history['URLs'][key] = temp_dict['URLs'][key]
             json_object = json.dumps(archived_history, indent=4)
             rfile.close()
@@ -115,6 +123,7 @@ def update_json(filename, INDEX):  # updating the json values within the json fi
             outfile.write(json_object)
     except Exception as e:
         print(e)
+
 
 
 def archive_updater(DRIVER, INDEX, json_filename): # basically a update all
@@ -298,45 +307,15 @@ def report_generation(INDEX):
             if url in DOM_CHANGES.keys():
                 rf.write("Approved changes not in whitelist:\n")
                 rf.write("Original content: " + str(DOM_CHANGES[url][0]) + "\n")
-                rf.write("Changed/removed content: " + str(
-                    DOM_CHANGES[url][1]) + "\n")
-                if get_removed_content(DOM_CHANGES[url][1],
-                                       DOM_CHANGES[url][0]) is not False:
-                    rf.write("Content Removed: " + str(
-                        get_removed_content(DOM_CHANGES[url][1],
-                                            DOM_CHANGES[url][0])))
+                rf.write("Changed/removed content: " + str(DOM_CHANGES[url][1]) + "\n")
+                if get_removed_content(DOM_CHANGES[url][1], DOM_CHANGES[url][0]) is not False:
+                    rf.write("Content Removed: " + str(get_removed_content(DOM_CHANGES[url][1], DOM_CHANGES[url][0])))
                     rf.write("\n")
             else:
                 rf.write("No content changes to URL" + "\n")
-            rf.write(
-                "Number of times URL content changed up to this point:" + str(
-                    times_url_change_dict[url]) + "\n\n")
+            rf.write("Number of times URL content changed up to this point:" + str(times_url_change_dict[url]) + "\n\n")
 
     rf.close()
-
-
-def report_generation_url(url_redlist, DOM_CHANGES, DRIVER):
-    # Report generation based on each url, each changed url will have a different txt
-    if not os.path.isdir("Reports\\"):
-        os.mkdir("Reports\\")
-    date_time_now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    for url in url_redlist:
-        if url in DOM_CHANGES.keys():
-            with open("Reports\\" + urlparse(
-                    url).netloc + " " + date_time_now + ".txt", "w") as rf:
-                rf.write("Changes for " + url + "\n")
-                rf.write("Approved changes not in whitelist:\n")
-                rf.write("Original content: " + str(DOM_CHANGES[url][0]) + "\n")
-                rf.write("Changed/removed content: " + str(
-                    DOM_CHANGES[url][1]) + "\n")
-                if get_removed_content(DOM_CHANGES[url][1],
-                                       DOM_CHANGES[url][0]) is not False:
-                    rf.write(
-                        "Content Removed: " + str(
-                            get_removed_content(DOM_CHANGES[url][1],
-                                                DOM_CHANGES[url][0])))
-                    rf.write("\n")
-        rf.close()
 
 
 def clean_urls(url_list):
@@ -344,3 +323,7 @@ def clean_urls(url_list):
         r'^.*\.(?!js$|ico$|atom$|png$)[^.]+$')  # remove non-webpages
     filtered = [i for i in url_list if regex.match(i)]
     return filtered
+
+
+def main():
+    pass

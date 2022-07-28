@@ -140,7 +140,8 @@ def set_layout():
          PySG.FileBrowse("Whitelist",
                          size=(14, 1),
                          pad=(10, 10),
-                         file_types=(("ALL Files", "*.txt"),)),
+                         file_types=(("ALL Files", "*.txt"),),
+                         key="-MONITOR_WHITELIST-"),
 
          PySG.Button("Report",
                      size=(14, 1),
@@ -435,6 +436,11 @@ def generate_gui(layout):
                                                 text_color=RED)
             window["-MONITOR_PROG-"].update(1, 1)
 
+        if event == "-MONITOR_WHITELIST-":
+            pass
+        if event == "-MONITOR_REPORT-":
+            pass
+
         if event == "-MONITOR_SAVE-":
             print(INDEX)
             print(values["-WEBSITE_FILENAME-"])
@@ -444,6 +450,12 @@ def generate_gui(layout):
                                      values["-WEBSITE_FILENAME-"])
             window["-MONITOR_INFO-"].update("JSON ARCHIVE UPDATED!",
                                             text_color=GREEN)
+            if figure_agg:
+                stats_graph.delete_fig_agg(figure_agg)
+                figure_agg = stats_graph.draw_figure(
+                    window["-STATS_CANVAS-"].TKCanvas,
+                    stats_graph.create_scatterplot())
+
             window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_BACK-":
