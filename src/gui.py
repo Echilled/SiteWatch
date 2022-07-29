@@ -146,11 +146,15 @@ def set_layout():
          PySG.Button("Report",
                      size=(14, 1),
                      pad=(10, 10),
+                     button_color=RED,
+                     disabled=True,
                      key="-MONITOR_REPORT-"),
 
          PySG.Button("Save",
                      size=(14, 1),
                      pad=(10, 10),
+                     button_color=RED,
+                     disabled=True,
                      key="-MONITOR_SAVE-")],
 
         [PySG.ProgressBar(100,
@@ -456,6 +460,12 @@ def generate_gui(layout):
                                                      ROW_COLOR))
                 window["-MONITOR_INFO-"].update("DOMAIN UPDATED!",
                                                 text_color=GREEN)
+                window["-MONITOR_REPORT-"].update(
+                    button_color=GREEN,
+                    disabled=False)
+                window["-MONITOR_SAVE-"].update(
+                    button_color=GREEN,
+                    disabled=False)
             else:
                 window["-MONITOR_INFO-"].update("NO ROW SELECTED!",
                                                 text_color=RED)
@@ -487,6 +497,12 @@ def generate_gui(layout):
 
             window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED!",
                                             text_color=GREEN)
+            window["-MONITOR_REPORT-"].update(
+                button_color=GREEN,
+                disabled=False)
+            window["-MONITOR_SAVE-"].update(
+                button_color=GREEN,
+                disabled=False)
 
         if event == "-MONITOR_DETAILS-":
             window["-MONITOR_INFO-"].update("GENERATING DETAILS!",
