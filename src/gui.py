@@ -434,6 +434,8 @@ def generate_gui(layout):
                 selected_row = event[2][0]
 
         if event == "-MONITOR_UPDATE-":
+            window["-MONITOR_INFO-"].update("UPDATING DOMAIN!",
+                                            text_color=WHITE)
             window["-MONITOR_PROG-"].update(0, 1)
 
             if selected_row is not None:
@@ -452,12 +454,16 @@ def generate_gui(layout):
                     row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
                                                      .get(),
                                                      ROW_COLOR))
+                window["-MONITOR_INFO-"].update("DOMAIN UPDATED!",
+                                                text_color=GREEN)
             else:
                 window["-MONITOR_INFO-"].update("NO ROW SELECTED!",
                                                 text_color=RED)
             window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_UPDATE_ALL-":
+            window["-MONITOR_INFO-"].update("UPDATING ALL DOMAINS!",
+                                            text_color=WHITE)
             max_val = len(window["-MONITOR_TABLE-"].get())
             window["-MONITOR_PROG-"].update(1, max_val)
             for selected_row, url in enumerate(window["-MONITOR_TABLE-"].get()):
@@ -479,7 +485,12 @@ def generate_gui(layout):
                                                      ROW_COLOR))
                 window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
 
+            window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED!",
+                                            text_color=GREEN)
+
         if event == "-MONITOR_DETAILS-":
+            window["-MONITOR_INFO-"].update("GENERATING DETAILS!",
+                                            text_color=WHITE)
             window["-MONITOR_PROG-"].update(0, 1)
             if selected_row is not None:
                 domain = window["-MONITOR_TABLE-"].get()[
@@ -490,6 +501,8 @@ def generate_gui(layout):
                 pyperclip.copy(info)
                 PySG.popup("URL DETAILS",
                            info + "Details copied onto your clipboard!", )
+                window["-MONITOR_INFO-"].update("GENERATED DETAILS!",
+                                                text_color=GREEN)
             else:
                 window["-MONITOR_INFO-"].update("NO ROW SELECTED!",
                                                 text_color=RED)
@@ -497,22 +510,27 @@ def generate_gui(layout):
 
         if event == "-MONITOR_WHITELIST-":
             pass
+
         if event == "-MONITOR_REPORT-":
-            window["-MONITOR_PROG-"].update(0, 1)
             window["-MONITOR_INFO-"].update("GENERATING REPORT!",
                                             text_color=WHITE)
-
-            for url in INDEX.keys():
-                archiver.Diff_url(DRIVER, url)
-            archiver.report_generation(INDEX)
-            window["-MONITOR_INFO-"].update("REPORT GENERATED!",
-                                            text_color=GREEN)
+            window["-MONITOR_PROG-"].update(0, 1)
+            try:
+                for url in INDEX.keys():
+                    archiver.Diff_url(DRIVER, url)
+                archiver.report_generation(INDEX)
+                window["-MONITOR_INFO-"].update("REPORT GENERATED!",
+                                                text_color=GREEN)
+            except Exception:
+                window["-MONITOR_INFO-"].update("REPORTING FAILED!",
+                                                text_color=RED)
 
             window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_SAVE-":
+            window["-MONITOR_INFO-"].update("SAVING JSON ARCHIVE!",
+                                            text_color=WHITE)
             print(INDEX)
-            print(values["-WEBSITE_FILENAME-"])
             window["-MONITOR_PROG-"].update(0, 1)
             archiver.archive_updater(DRIVER,
                                      INDEX,
