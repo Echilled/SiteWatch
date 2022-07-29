@@ -179,14 +179,73 @@ def set_layout():
         [PySG.Canvas(expand_x=True,
                      expand_y=True,
                      pad=(10, 10),
-                     key="-STATS_CANVAS-")]]
+                     key="-STATS_CANVAS-")]
+    ]
 
     recovery_layout = [
         [PySG.Text("Recovery",
                    size=(30, 1),
                    font=("Helvetica", 25),
                    pad=(10, 0),
-                   text_color="white")]]
+                   text_color="white")],
+
+        [PySG.Table(values=[],
+                    headings=["File", "Hash", "Modified"],
+                    justification="left",
+                    text_color="white",
+                    alternating_row_color="grey8",
+                    auto_size_columns=False,
+                    def_col_width=5,
+                    col_widths=[28, 30, 15],
+                    expand_x=True,
+                    expand_y=True,
+                    enable_click_events=True,
+                    key="-RECOVERY_TABLE-")],
+
+        [PySG.Text("Target Path: ",
+                   pad=((10, 12), (10, 0))),
+
+         PySG.InputText(size=(0, 1),
+                        text_color="grey2",
+                        pad=(10, (10, 0)),
+                        disabled=True,
+                        expand_x=True,
+                        enable_events=True,
+                        key="-RECOVERY_ROOT-"),
+
+         PySG.FolderBrowse(size=(12, 1),
+                           pad=((5, 10), (5, 0)))],
+
+        [PySG.Text("Backup Path: ",
+                   pad=((10, 4), (10, 0))),
+
+         PySG.InputText(size=(0, 1),
+                        text_color="grey2",
+                        pad=(10, (10, 0)),
+                        disabled=True,
+                        expand_x=True,
+                        enable_events=True,
+                        key="-RECOVERY_ARCHIVE-"),
+
+         PySG.FolderBrowse(size=(12, 1),
+                           pad=((5, 10), (5, 0)))],
+
+        [PySG.Text("Auto Recover: ",
+                   pad=((10, 4), (10, 10))),
+
+         PySG.Button('On',
+                     size=(14, 1),
+                     button_color='white on green',
+                     key='-RECOVERY_TOGGLE-'),
+
+         PySG.Stretch(),
+
+         PySG.Button("Recover",
+                     size=(12, 1),
+                     pad=(10, 10),
+                     key="-RECOVERY_RECOVER-"),
+         ]
+    ]
 
     tab_group = [
         [PySG.TabGroup(
