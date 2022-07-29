@@ -23,7 +23,7 @@ INDEX = {}
 ROW_COLOR = {}
 RED = "red4"
 GREEN = "green4"
-WHITE = "white on "
+WHITE = "white"
 
 
 def set_layout():
@@ -498,7 +498,17 @@ def generate_gui(layout):
         if event == "-MONITOR_WHITELIST-":
             pass
         if event == "-MONITOR_REPORT-":
-            pass
+            window["-MONITOR_PROG-"].update(0, 1)
+            window["-MONITOR_INFO-"].update("GENERATING REPORT!",
+                                            text_color=WHITE)
+
+            for url in INDEX.keys():
+                archiver.Diff_url(DRIVER, url)
+            archiver.report_generation(INDEX)
+            window["-MONITOR_INFO-"].update("REPORT GENERATED!",
+                                            text_color=GREEN)
+
+            window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_SAVE-":
             print(INDEX)
