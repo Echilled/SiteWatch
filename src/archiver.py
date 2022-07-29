@@ -98,8 +98,8 @@ def json_construct(id, hash, date, times_it_changed):
 
 
 def update_json(filename, INDEX):  # updating the json values within the json file and writing out to it
-    #print(times_url_change_dict)
-    #print(DOM_CHANGES)
+    print(times_url_change_dict)
+    print(DOM_CHANGES)
     try:
         JSON_values = []  # Archive web page hash
         temp_dict = {'URLs': {}}
@@ -303,18 +303,17 @@ def report_generation(INDEX):
     with open("Reports\\Report_" + date_time_now + ".txt", "w") as rf:
         rf.write("URLs checked at: " + date_time_write + "\n")
         for url in INDEX.keys():
+            rf.write("\n\n")
             rf.write(url + '\n')
-            if url in DOM_CHANGES.keys():
+            if url in DOM_CHANGES.keys() and DOM_CHANGES[url]:
                 rf.write("Approved changes not in whitelist:\n")
                 rf.write("Original content: " + str(DOM_CHANGES[url][0]) + "\n")
                 rf.write("Changed/removed content: " + str(DOM_CHANGES[url][1]) + "\n")
                 if get_removed_content(DOM_CHANGES[url][1], DOM_CHANGES[url][0]) is not False:
                     rf.write("Content Removed: " + str(get_removed_content(DOM_CHANGES[url][1], DOM_CHANGES[url][0])))
-                    rf.write("\n")
+                    rf.write("\n\n")
             else:
                 rf.write("No content changes to URL" + "\n")
-            rf.write("Number of times URL content changed up to this point:" + str(times_url_change_dict[url]) + "\n\n")
-
     rf.close()
 
 
