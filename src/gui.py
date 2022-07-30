@@ -23,7 +23,7 @@ INDEX = {}
 ROW_COLOR = {}
 RED = "red4"
 GREEN = "green4"
-WHITE = "white"
+WHITE = "grey50"
 
 
 def set_layout():
@@ -444,28 +444,33 @@ def generate_gui(layout):
 
             if selected_row is not None:
                 url = window["-MONITOR_TABLE-"].get()[selected_row]
-                updated = webdriver.update(DRIVER, url)
-                INDEX.update(updated)
-                window["-MONITOR_TABLE-"].update(
-                    [row for row in indexer.table(INDEX)
-                     if values["-MONITOR_FILTER-"] in " ".join(row)])
-                url = window["-MONITOR_TABLE-"].get()[selected_row]
-                if webdriver.compare_hash(DRIVER, url)[0]:
-                    ROW_COLOR[url[0]] = GREEN
+                if indexer.whitelist(url[0], values["-MONITOR_WHITELIST-"]):
+                    ROW_COLOR[url[0]] = WHITE
                 else:
-                    ROW_COLOR[url[0]] = RED
+                    updated = webdriver.update(DRIVER, url)
+                    INDEX.update(updated)
+                    window["-MONITOR_TABLE-"].update(
+                        [row for row in indexer.table(INDEX)
+                         if values["-MONITOR_FILTER-"] in " ".join(row)])
+                    url = window["-MONITOR_TABLE-"].get()[selected_row]
+                    if webdriver.compare_hash(DRIVER, url)[0]:
+                        ROW_COLOR[url[0]] = GREEN
+                    else:
+                        ROW_COLOR[url[0]] = RED
+
+                    window["-MONITOR_REPORT-"].update(
+                        button_color=GREEN,
+                        disabled=False)
+                    window["-MONITOR_SAVE-"].update(
+                        button_color=GREEN,
+                        disabled=False)
+
                 window["-MONITOR_TABLE-"].Update(
-                    row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
-                                                     .get(),
-                                                     ROW_COLOR))
+                    row_colors=indexer.set_row_color(
+                        window["-MONITOR_TABLE-"].get(), ROW_COLOR))
+
                 window["-MONITOR_INFO-"].update("DOMAIN UPDATED!",
                                                 text_color=GREEN)
-                window["-MONITOR_REPORT-"].update(
-                    button_color=GREEN,
-                    disabled=False)
-                window["-MONITOR_SAVE-"].update(
-                    button_color=GREEN,
-                    disabled=False)
             else:
                 window["-MONITOR_INFO-"].update("NO ROW SELECTED!",
                                                 text_color=RED)
@@ -478,31 +483,35 @@ def generate_gui(layout):
             window["-MONITOR_PROG-"].update(1, max_val)
             for selected_row, url in enumerate(window["-MONITOR_TABLE-"].get()):
                 url = window["-MONITOR_TABLE-"].get()[selected_row]
-                updated = webdriver.update(DRIVER, url)
-                INDEX.update(updated)
-                window["-MONITOR_TABLE-"].update(
-                    [row for row in indexer.table(INDEX)
-                     if values["-MONITOR_FILTER-"] in " ".join(row)])
-                url = window["-MONITOR_TABLE-"].get()[selected_row]
-                if webdriver.compare_hash(DRIVER, url)[0]:
-                    ROW_COLOR[url[0]] = GREEN
+                if indexer.whitelist(url[0], values["-MONITOR_WHITELIST-"]):
+                    ROW_COLOR[url[0]] = WHITE
                 else:
-                    ROW_COLOR[url[0]] = RED
+                    updated = webdriver.update(DRIVER, url)
+                    INDEX.update(updated)
+                    window["-MONITOR_TABLE-"].update(
+                        [row for row in indexer.table(INDEX)
+                         if values["-MONITOR_FILTER-"] in " ".join(row)])
+                    url = window["-MONITOR_TABLE-"].get()[selected_row]
+                    if webdriver.compare_hash(DRIVER, url)[0]:
+                        ROW_COLOR[url[0]] = GREEN
+                    else:
+                        ROW_COLOR[url[0]] = RED
+
+                    window["-MONITOR_REPORT-"].update(
+                        button_color=GREEN,
+                        disabled=False)
+                    window["-MONITOR_SAVE-"].update(
+                        button_color=GREEN,
+                        disabled=False)
 
                 window["-MONITOR_TABLE-"].Update(
                     row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
                                                      .get(),
                                                      ROW_COLOR))
-                window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
 
             window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED!",
                                             text_color=GREEN)
-            window["-MONITOR_REPORT-"].update(
-                button_color=GREEN,
-                disabled=False)
-            window["-MONITOR_SAVE-"].update(
-                button_color=GREEN,
-                disabled=False)
+            window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
 
         if event == "-MONITOR_DETAILS-":
             window["-MONITOR_INFO-"].update("GENERATING DETAILS!",

@@ -49,3 +49,17 @@ def set_row_color(INDEX, ROW_COLOR):
         if url[0] in ROW_COLOR:
             out.append([row, ROW_COLOR[url[0]]])
     return out
+
+
+def whitelist(url, filepath):
+    try:
+        if filepath:
+            with open(filepath, "r") as rf:
+                for row in rf.readlines():
+                    if row == url:
+                        return True
+                return False
+        else:
+            return False
+    except Exception:
+        print("Whitelist Exceptions")
