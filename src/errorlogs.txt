@@ -1,0 +1,39 @@
+Generic exception: Traceback (most recent call last):
+  File "C:\Users\OverZeeR\Desktop\SiteWatch\src\crawler.py", line 52, in crawl
+    soup = BeautifulSoup(content, 'lxml', parse_only=SoupStrainer(['a', 'link']))
+  File "C:\Users\OverZeeR\Desktop\SiteWatch\venv\lib\site-packages\bs4\__init__.py", line 248, in __init__
+    raise FeatureNotFound(
+bs4.FeatureNotFound: Couldn't find a tree builder with the features you requested: lxml. Do you need to install a parser library?
+ in https://www.ledr.com/colours/white.htmGeneric exception: Traceback (most recent call last):
+  File "C:\Users\OverZeeR\Desktop\SiteWatch\src\crawler.py", line 43, in crawl
+    page = urlopen(Request(
+  File "C:\python\Python310_0\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\python\Python310_0\lib\urllib\request.py", line 519, in open
+    response = self._open(req, data)
+  File "C:\python\Python310_0\lib\urllib\request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "C:\python\Python310_0\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\python\Python310_0\lib\urllib\request.py", line 1377, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "C:\python\Python310_0\lib\urllib\request.py", line 1317, in do_open
+    h = http_class(host, timeout=req.timeout, **http_conn_args)
+  File "C:\python\Python310_0\lib\http\client.py", line 853, in __init__
+    self._validate_host(self.host)
+  File "C:\python\Python310_0\lib\http\client.py", line 1235, in _validate_host
+    raise InvalidURL(f"URL can't contain control characters. {host!r} "
+http.client.InvalidURL: URL can't contain control characters. 'Enter a Fully Qualified Domain Name' (found at least ' ')
+ in http://Enter a Fully Qualified Domain NameGeneric exception: Traceback (most recent call last):
+  File "C:\Users\OverZeeR\Desktop\SiteWatch\src\crawler.py", line 52, in crawl
+    soup = BeautifulSoup(content, 'lxml', parse_only=SoupStrainer(['a', 'link']))
+  File "C:\Users\OverZeeR\Desktop\SiteWatch\venv\lib\site-packages\bs4\__init__.py", line 248, in __init__
+    raise FeatureNotFound(
+bs4.FeatureNotFound: Couldn't find a tree builder with the features you requested: lxml. Do you need to install a parser library?
+ in https://www.ledr.com/colours/white.htmGeneric exception: Traceback (most recent call last):
+  File "C:\Users\OverZeeR\Desktop\SiteWatch\src\crawler.py", line 52, in crawl
+    soup = BeautifulSoup(content, 'lxml', parse_only=SoupStrainer(['a', 'link']))
+  File "C:\Users\OverZeeR\Desktop\SiteWatch\venv\lib\site-packages\bs4\__init__.py", line 248, in __init__
+    raise FeatureNotFound(
+bs4.FeatureNotFound: Couldn't find a tree builder with the features you requested: lxml. Do you need to install a parser library?
+ in https://www.ledr.com/colours/white.htm

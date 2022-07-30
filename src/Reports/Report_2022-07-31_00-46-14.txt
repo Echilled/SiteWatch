@@ -1,0 +1,39 @@
+URLs checked at: 2022-07-31_00:46:14
+
+
+https://time.gov
+No content changes to URL
+
+
+http://randomcolour.com
+No content changes to URL
+
+
+https://www.ledr.com/colours/multi.htm
+No content changes to URL
+
+
+https://www.ledr.com/colours/grey.htm
+No content changes to URL
+
+
+https://www.ledr.com/colours/white.htm
+No content changes to URL
+
+
+https://www.ledr.com/colours/black.htm
+No content changes to URL
+
+
+https://numbergenerator.org/
+No content changes to URL
+
+
+https://www.brainyquote.com/quote_of_the_day
+No content changes to URL
+
+
+https://www.isomer.gov.sg/
+Approved changes not in whitelist:
+Original content: ['<script type="module" src="https://assets.wogaa.sg/sentiments/sentiments.esm.js" async=""></script><script nomodule="" src="https://assets.wogaa.sg/sentiments/sentiments.js" async=""></script><script type="module" src="blob:https://www.isomer.gov.sg/496bb9e8-1268-4f47-9fa2-305b98d70fbe"></script></head>\n']
+Changed/removed content: ['<script type="module" src="https://assets.wogaa.sg/sentiments/sentiments.esm.js" async=""></script><script nomodule="" src="https://assets.wogaa.sg/sentiments/sentiments.js" async=""></script><script type="module" src="blob:https://www.isomer.gov.sg/36dc9428-0fa2-4a42-a7d0-bbd5a87aa3fb"></script></head>\n']
