@@ -2,30 +2,65 @@
     "URLs": {
         "https://time.gov": {
             "properties": {
-                "hash": "BED748F7110F5EA270961DD5F892D95D",
-                "archival_date": "2022-07-29 23:41:07",
-                "number of times URL content change": 24
+                "hash": "B14ACCD32BFD5C5F02192C4711510895",
+                "archival_date": "2022-07-31 00:39:58",
+                "number of times URL content change": 33
+            }
+        },
+        "http://randomcolour.com": {
+            "properties": {
+                "hash": "44C1F541B08858095C829289D04EDEDA",
+                "archival_date": "2022-07-31 00:40:03",
+                "number of times URL content change": 25
+            }
+        },
+        "https://www.ledr.com/colours/multi.htm": {
+            "properties": {
+                "hash": "0DEBC77372740436519994B42B14A784",
+                "archival_date": "2022-07-31 00:40:04",
+                "number of times URL content change": 0
+            }
+        },
+        "https://www.ledr.com/colours/grey.htm": {
+            "properties": {
+                "hash": "EFDF4B6BFEB675B0DA3039D986FD9537",
+                "archival_date": "2022-07-31 00:40:05",
+                "number of times URL content change": 0
             }
         },
         "https://www.ledr.com/colours/white.htm": {
             "properties": {
                 "hash": "17D536F33EA589B49DE723744AC676DC",
-                "archival_date": "2022-07-26 14:40:17",
+                "archival_date": "2022-07-31 00:40:06",
                 "number of times URL content change": 0
-            }
-        },
-        "http://randomcolour.com": {
-            "properties": {
-                "hash": "6D882C68353420B32641B93D9A3F4A2C",
-                "archival_date": "2022-07-28 14:45:08",
-                "number of times URL content change": 16
             }
         },
         "https://www.ledr.com/colours/black.htm": {
             "properties": {
                 "hash": "2101B0D247764A46D49FEB156D53E8D0",
-                "archival_date": "2022-07-24 14:40:19",
+                "archival_date": "2022-07-31 00:40:06",
                 "number of times URL content change": 0
+            }
+        },
+        "https://numbergenerator.org/": {
+            "properties": {
+                "hash": "260ADE173519522D8193CAADB240FFB5",
+                "archival_date": "2022-07-31 00:40:07",
+                "number of times URL content change": 7
+            }
+        },
+        "https://www.brainyquote.com/quote_of_the_day": {
+            "properties": {
+                "hash": "1211981FB41C6F22C84B778A5B432F7C",
+                "archival_date": "2022-07-31 00:40:08",
+                "number of times URL content change": 6
+            }
+        },
+        "https://www.isomer.gov.sg/": {
+            "properties": {
+                "hash": "D21476A8695DD78CA1B1076D88AB0984",
+                "archival_date": "2022-07-31 00:46:05",
+                "number of times URL content change": 9
             }
         }
     }

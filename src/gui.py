@@ -17,6 +17,7 @@ matplotlib.use("TkAgg")
 options = Options()
 options.add_argument("--headless")
 options.add_argument("--disable-gpu")
+options.add_experimental_option( "prefs",{'profile.managed_default_content_settings.javascript': 2})
 DRIVER = wd.Chrome(options=options)
 VERSION = "SiteWatch v0.1"
 INDEX = {}
@@ -137,10 +138,15 @@ def set_layout():
                      pad=(10, 10),
                      key="-MONITOR_DETAILS-"),
 
+         PySG.Input(enable_events=True,
+                    visible=False,
+                    key="-MONITOR_WHITELIST-"),
+
          PySG.FileBrowse("Whitelist",
                          size=(14, 1),
                          pad=(10, 10),
-                         file_types=(("ALL Files", "*.txt"),),
+                         enable_events=True,
+                         file_types=(("ALL Files", "*.json"),),
                          key="-MONITOR_WHITELIST-"),
 
          PySG.Button("Report",
@@ -378,6 +384,9 @@ def generate_gui(layout):
                 indexer.add(INDEX, domain)
 
             window["-MONITOR_TABLE-"].update(values=indexer.table(INDEX))
+            window["-MONITOR_TABLE-"].Update(
+                row_colors=indexer.set_row_color(
+                    window["-MONITOR_TABLE-"].get(), ROW_COLOR))
 
             window["-MONITOR_TAB-"].update(disabled=False)
             window["-TAB_GROUP-"].Widget.select(1)
@@ -423,19 +432,23 @@ def generate_gui(layout):
                 row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
                                                  .get(),
                                                  ROW_COLOR))
+            window.refresh()
 
         if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
             if event[2][0] == -1 and event[2][1] != -1:
                 window["-MONITOR_TABLE-"].update(indexer.sort_table(
                     window["-MONITOR_TABLE-"].get(), event[2][1]))
+                window.refresh()
                 window["-MONITOR_TABLE-"].Update(
                     row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
                                                      .get(),
                                                      ROW_COLOR))
+                window.refresh()
 
         if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
             if event[2][0] != -1 and event[2][1] != -1:
                 selected_row = event[2][0]
+                window.refresh()
 
         if event == "-MONITOR_UPDATE-":
             window["-MONITOR_INFO-"].update("UPDATING DOMAIN!",
@@ -444,8 +457,18 @@ def generate_gui(layout):
 
             if selected_row is not None:
                 url = window["-MONITOR_TABLE-"].get()[selected_row]
-                if indexer.whitelist(url[0], values["-MONITOR_WHITELIST-"]):
-                    ROW_COLOR[url[0]] = WHITE
+
+                if webdriver.check_whitelist(url):
+                    wl = webdriver.whitelist(DRIVER, url)
+                    if wl[0]:
+                        ROW_COLOR[url[0]] = WHITE
+                    else:
+                        ROW_COLOR[url[0]] = RED
+
+                    INDEX.update({wl[1]: [wl[2], wl[3]]})
+                    window["-MONITOR_TABLE-"].update(
+                        [row for row in indexer.table(INDEX)
+                         if values["-MONITOR_FILTER-"] in " ".join(row)])
                 else:
                     updated = webdriver.update(DRIVER, url)
                     INDEX.update(updated)
@@ -468,23 +491,52 @@ def generate_gui(layout):
                 window["-MONITOR_TABLE-"].Update(
                     row_colors=indexer.set_row_color(
                         window["-MONITOR_TABLE-"].get(), ROW_COLOR))
-
-                window["-MONITOR_INFO-"].update("DOMAIN UPDATED!",
-                                                text_color=GREEN)
+                window.refresh()
             else:
                 window["-MONITOR_INFO-"].update("NO ROW SELECTED!",
                                                 text_color=RED)
+
+            window["-MONITOR_INFO-"].update("DOMAIN UPDATED!",
+                                            text_color=GREEN)
             window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_UPDATE_ALL-":
             window["-MONITOR_INFO-"].update("UPDATING ALL DOMAINS!",
                                             text_color=WHITE)
             max_val = len(window["-MONITOR_TABLE-"].get())
-            window["-MONITOR_PROG-"].update(1, max_val)
+            window["-MONITOR_PROG-"].update(0, max_val)
             for selected_row, url in enumerate(window["-MONITOR_TABLE-"].get()):
                 url = window["-MONITOR_TABLE-"].get()[selected_row]
-                if indexer.whitelist(url[0], values["-MONITOR_WHITELIST-"]):
-                    ROW_COLOR[url[0]] = WHITE
+
+                if webdriver.check_whitelist(url):
+
+                    wl = webdriver.whitelist(DRIVER, url)
+                    if wl[0]:
+                        ROW_COLOR[url[0]] = WHITE
+                    else:
+                        ROW_COLOR[url[0]] = RED
+
+                    INDEX.update({wl[1]: [wl[2], wl[3]]})
+                    window["-MONITOR_TABLE-"].update(
+                        [row for row in indexer.table(INDEX)
+                         if values["-MONITOR_FILTER-"] in " ".join(row)])
+
+                    window["-MONITOR_REPORT-"].update(
+                        button_color=GREEN,
+                        disabled=False)
+                    window["-MONITOR_SAVE-"].update(
+                        button_color=GREEN,
+                        disabled=False)
+
+                    window["-MONITOR_TABLE-"].Update(
+                        row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
+                                                         .get(),
+                                                         ROW_COLOR))
+
+                    window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED!",
+                                                    text_color=GREEN)
+                    window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
+
                 else:
                     updated = webdriver.update(DRIVER, url)
                     INDEX.update(updated)
@@ -508,10 +560,10 @@ def generate_gui(layout):
                     row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
                                                      .get(),
                                                      ROW_COLOR))
+                window.refresh()
 
             window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED!",
                                             text_color=GREEN)
-            window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
 
         if event == "-MONITOR_DETAILS-":
             window["-MONITOR_INFO-"].update("GENERATING DETAILS!",
@@ -534,7 +586,10 @@ def generate_gui(layout):
             window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_WHITELIST-":
-            pass
+            if values["-MONITOR_WHITELIST-"] != "":
+                webdriver.set_whitelist(values["-MONITOR_WHITELIST-"])
+                window["-MONITOR_INFO-"].update("WHITELIST UPLOADED!",
+                                                text_color=GREEN)
 
         if event == "-MONITOR_REPORT-":
             window["-MONITOR_INFO-"].update("GENERATING REPORT!",
@@ -553,9 +608,9 @@ def generate_gui(layout):
             window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_SAVE-":
+            print(INDEX)
             window["-MONITOR_INFO-"].update("SAVING JSON ARCHIVE!",
                                             text_color=WHITE)
-            print(INDEX)
             window["-MONITOR_PROG-"].update(0, 1)
             archiver.archive_updater(DRIVER,
                                      INDEX,
@@ -586,10 +641,19 @@ def generate_gui(layout):
             pass
         if event == "-RECOVERY_TOGGLE-":
             pass
-        if event == "-RECOVERY_RECOVER-":
+        if event == "-RECOVERY_ROOT-":
             print(window["-RECOVERY_ROOT-"].get())
+            target_folder = values["-RECOVERY_ROOT-"]
+        if event == "-RECOVERY_ARCHIVE-":
             print(window["-RECOVERY_ARCHIVE-"].get())
-            pass
+            backup_folder = values["-RECOVERY_ARCHIVE-"]
+        if event == "-RECOVERY_RECOVER-":
+            recover_folder(target_folder, backup_folder)
+        # if event == "-RECOVERY_RECOVER-":
+        #    print(window["-RECOVERY_ROOT-"].get())
+        #    target_folder = values["-RECOVERY_ROOT-"]
+        #    print(window["-RECOVERY_ARCHIVE-"].get())
+        #    backup_folder = values["-RECOVERY_ARCHIVE-"]
 
 ################################################################################
 ################################################################################

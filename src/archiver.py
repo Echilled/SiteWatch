@@ -13,34 +13,6 @@ times_url_change_dict = {}
 DOM_CHANGES = {}
 APP_PASSWORD = 'happymother123'
 
-
-def web_hash_checker(DRIVER, url, INDEX):
-    print(url)
-    DRIVER.get(url)
-    ad_blocker()
-    dom = DRIVER.page_source
-    md5 = hashlib.md5(dom.encode("utf-8"))
-    digest = md5.hexdigest()
-    try:
-        if INDEX[url][0].strip('\n') != digest:
-            INDEX[url][0] = digest
-            print("Website does not match previous hash archive")  # Need user to accept before updating archive
-            Diff_url(url)  # function to run if hash is not the same
-        else:
-            print("Website match previous archive")
-            try:
-                if "archive\\" + DRIVER.title + "_new.html":
-                    os.remove("archive\\" + DRIVER.title + "_new.html")
-                    print(url + " archive will not change")
-            except FileNotFoundError:
-                print(url + " archive will not change")
-    except Exception as e:
-        # First time archiving
-        INDEX[url][0] = digest
-        print("New webpage archived")
-        times_url_change_dict[url] = 0
-
-
 def format_title(title):
     title = title.replace("|", "")
     return title
@@ -63,7 +35,7 @@ def update_change_history():
     # print(times_url_change_dict)
     for key in times_url_change_dict.keys():
         if key in DOM_CHANGES and DOM_CHANGES[key]:
-            print(DOM_CHANGES[key])
+            #print(DOM_CHANGES[key])
             times_url_change_dict[key] = times_url_change_dict.get(key, 0) + 1
     # print(times_url_change_dict)
 
@@ -98,8 +70,8 @@ def json_construct(id, hash, date, times_it_changed):
 
 
 def update_json(filename, INDEX):  # updating the json values within the json file and writing out to it
-    print(times_url_change_dict)
-    print(DOM_CHANGES)
+    #print(times_url_change_dict)
+    #print(DOM_CHANGES)
     try:
         JSON_values = []  # Archive web page hash
         temp_dict = {'URLs': {}}
@@ -129,7 +101,7 @@ def update_json(filename, INDEX):  # updating the json values within the json fi
 def archive_updater(DRIVER, INDEX, json_filename): # basically a update all
 # function
     # with open("WebHash.txt", "w+") as wf:
-    print("Updating archive")
+    #print("Updating archive")
     # wf.writelines("\n".join(','.join((key,val)) for (key,val) in INDEX.items()))
     index_change_history(json_filename)
     update_change_history()
@@ -145,13 +117,14 @@ def page_archiver(dom, title):
     page_title = format_title(title)
     if not os.path.isfile("archive\\" + page_title + ".html"):
         #print('First time webpage code archive')
-        with open("archive\\" + page_title + ".html", "w+") as file:
+        with open("archive\\" + page_title + ".html", "w+", encoding='utf-8') as file:
             file.write(page_source)
     elif os.path.isfile("archive\\" + page_title + ".html"):
         #print('changed webpage code archived, will use it for comparison
         # later')
-        with open("archive\\" + page_title + "_new.html", "w+") as file:
+        with open("archive\\" + page_title + "_new.html", "w+", encoding='utf-8') as file:
             file.write(page_source)
+
 
 
 def show_webpage_code_diff():  # basically function  to list before and after changes
