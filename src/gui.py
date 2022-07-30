@@ -586,9 +586,20 @@ def generate_gui(layout):
             pass
         if event == "-RECOVERY_TOGGLE-":
             pass
-        if event == "-RECOVERY_RECOVER-":
+        if event == "-RECOVERY_ROOT-":
             print(window["-RECOVERY_ROOT-"].get())
+            target_folder = values["-RECOVERY_ROOT-"]
+        if event == "-RECOVERY_ARCHIVE-":
             print(window["-RECOVERY_ARCHIVE-"].get())
+            backup_folder = values["-RECOVERY_ARCHIVE-"]
+        if event == "-RECOVERY_RECOVER-":
+            recover_folder(target_folder,backup_folder)
+        #if event == "-RECOVERY_RECOVER-":
+        #    print(window["-RECOVERY_ROOT-"].get())
+        #    target_folder = values["-RECOVERY_ROOT-"]
+        #    print(window["-RECOVERY_ARCHIVE-"].get())
+        #    backup_folder = values["-RECOVERY_ARCHIVE-"]
+
             pass
 
 ################################################################################
