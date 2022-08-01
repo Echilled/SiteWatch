@@ -258,7 +258,7 @@ def page_changes_listing():
 def ad_blocker(DRIVER,):
     all_iframes = DRIVER.find_elements(By.TAG_NAME, "iframe")
     if len(all_iframes) > 0:
-        print("Ad Found, changes detected may contain ads\n")
+        #print("Ad Found, changes detected may contain ads\n")
         DRIVER.execute_script("""
             var elems = document.getElementsByTagName("iframe"); 
             for(var i = 0, max = elems.length; i < max; i++)

@@ -4,23 +4,131 @@ import archiver
 import hashlib
 import datetime
 import parse_json
+import time
+import threading
+import indexer
 from bs4 import BeautifulSoup
 
 WHITELIST = {}
+RED = "red4"
+GREEN = "green4"
+GREY = "grey50"
+WHITE = "white on "
+thread_state = ""
+
+
+def thread_function( window, values, DRIVER, INDEX, ROW_COLOR):
+    global thread_state
+    while thread_state == "ON":
+        window["-MONITOR_INFO-"].update("STARTING THREAD",
+                                        text_color=GREY)
+        max_val = len(window["-MONITOR_TABLE-"].get())
+        window["-MONITOR_PROG-"].update(0, max_val)
+        for selected_row, url in enumerate(window["-MONITOR_TABLE-"].get()):
+            if thread_state == "OFF":
+                window["-MONITOR_INFO-"].update("STOPPING THREAD",
+                                                text_color=RED)
+                return
+            url = window["-MONITOR_TABLE-"].get()[selected_row]
+
+            if check_whitelist(url):
+
+                wl = whitelist(DRIVER, url)
+                if wl[0]:
+                    ROW_COLOR[url[0]] = GREY
+                else:
+                    ROW_COLOR[url[0]] = RED
+
+                INDEX.update({wl[1]: [wl[2], wl[3]]})
+                window["-MONITOR_TABLE-"].update(
+                    [row for row in indexer.table(INDEX)
+                     if values["-MONITOR_FILTER-"] in " ".join(row)])
+
+                window.refresh()
+
+                window["-MONITOR_REPORT-"].update(
+                    button_color=GREEN,
+                    disabled=False)
+                window["-MONITOR_SAVE-"].update(
+                    button_color=GREEN,
+                    disabled=False)
+
+                window["-MONITOR_TABLE-"].Update(
+                    row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
+                                                     .get(),
+                                                     ROW_COLOR))
+
+                window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED",
+                                                text_color=GREEN)
+                window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
+                window.refresh()
+
+            else:
+                updated = update(DRIVER, url)
+                INDEX.update(updated)
+                window["-MONITOR_TABLE-"].update(
+                    [row for row in indexer.table(INDEX)
+                     if values["-MONITOR_FILTER-"] in " ".join(row)])
+                url = window["-MONITOR_TABLE-"].get()[selected_row]
+                if compare_hash(DRIVER, url)[0]:
+                    ROW_COLOR[url[0]] = GREEN
+                else:
+                    ROW_COLOR[url[0]] = RED
+
+                window.refresh()
+
+                window["-MONITOR_REPORT-"].update(
+                    button_color=GREEN,
+                    disabled=False)
+                window["-MONITOR_SAVE-"].update(
+                    button_color=GREEN,
+                    disabled=False)
+
+            window["-MONITOR_TABLE-"].Update(
+                row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
+                                                 .get(),
+                                                 ROW_COLOR))
+            window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
+            window.refresh()
+
+        window["-MONITOR_INFO-"].update("RE-STARTING THREAD",
+                                        text_color=GREEN)
+        window["-MONITOR_PROG-"].update(max_val, max_val)
+        window.refresh()
+        time.sleep(5)
+
+
+def update_thread(state, window, values, DRIVER, INDEX, ROW_COLOR):
+    global thread_state
+    if state:
+        thread_state = "ON"
+        t = threading.Thread(target=thread_function, args=(window,
+                                                           values,
+                                                           DRIVER,
+                                                           INDEX,
+                                                           ROW_COLOR)).start()
+    if not state:
+        thread_state = "OFF"
+
 
 
 def update(DRIVER, domain):
-    DRIVER.get(domain[0])
-    archiver.ad_blocker(DRIVER)
-    dom = DRIVER.page_source
-    title = DRIVER.title.replace("|", "")
+    try:
+        DRIVER.get(domain[0])
+        archiver.ad_blocker(DRIVER)
+        dom = DRIVER.page_source
+        title = DRIVER.title.replace("|", "")
 
-    web_hash = hashlib.md5(dom.encode("utf-8")).hexdigest().upper()
-    date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        web_hash = hashlib.md5(dom.encode("utf-8")).hexdigest().upper()
+        date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    archiver.page_archiver(dom, title)
-    archiver.Diff_url(DRIVER, domain[0])
-    return {domain[0]: [web_hash, date_time]}
+        archiver.page_archiver(dom, title)
+        archiver.Diff_url(DRIVER, domain[0])
+        return {domain[0]: [web_hash, date_time]}
+    except Exception:
+        print("Problems getting domain")
+        return {domain[0]: ["XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "0000-00-00 "
+                                                                "00:00:00"]}
 
 
 def check_whitelist(domain):
@@ -41,6 +149,7 @@ def set_whitelist(filepath):
     except KeyError:
         print("Invalid WhiteList")
         return False
+
 
 def whitelist(DRIVER, domain):
     DRIVER.get(domain[0])

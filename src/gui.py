@@ -176,7 +176,16 @@ def set_layout():
 
          PySG.Text("NO TASK ASSIGNED...",
                    pad=(5, 10),
-                   key="-MONITOR_INFO-")]
+                   key="-MONITOR_INFO-"),
+
+         PySG.Stretch(),
+
+         PySG.Button("OFF",
+                     size=(14, 1),
+                     button_color=WHITE + RED,
+                     disabled=False,
+                     key="-MONITOR_TOGGLE-"),
+         ]
     ]
 
     stats_layout = [
@@ -522,6 +531,8 @@ def generate_gui(layout):
                         [row for row in indexer.table(INDEX)
                          if values["-MONITOR_FILTER-"] in " ".join(row)])
 
+                    window.refresh()
+
                     window["-MONITOR_REPORT-"].update(
                         button_color=GREEN,
                         disabled=False)
@@ -537,6 +548,7 @@ def generate_gui(layout):
                     window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED",
                                                     text_color=GREEN)
                     window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
+                    window.refresh()
 
                 else:
                     updated = webdriver.update(DRIVER, url)
@@ -550,6 +562,8 @@ def generate_gui(layout):
                     else:
                         ROW_COLOR[url[0]] = RED
 
+                    window.refresh()
+
                     window["-MONITOR_REPORT-"].update(
                         button_color=GREEN,
                         disabled=False)
@@ -561,10 +575,13 @@ def generate_gui(layout):
                     row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
                                                      .get(),
                                                      ROW_COLOR))
+                window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
                 window.refresh()
 
             window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED",
                                             text_color=GREEN)
+            window["-MONITOR_PROG-"].update(max_val, max_val)
+            window.refresh()
 
         if event == "-MONITOR_DETAILS-":
             window["-MONITOR_INFO-"].update("GENERATING DETAILS",
@@ -633,6 +650,27 @@ def generate_gui(layout):
             window["-WEBSITE_TAB-"].update(disabled=False)
             window["-TAB_GROUP-"].Widget.select(0)
             window["-MONITOR_TAB-"].update(disabled=True)
+
+        if event == "-MONITOR_TOGGLE-":
+            if window["-MONITOR_TOGGLE-"].get_text() == "OFF":
+                window["-MONITOR_TOGGLE-"].update("ON",
+                                                  button_color=WHITE + GREEN)
+                webdriver.update_thread(True,
+                                        window,
+                                        values,
+                                        DRIVER,
+                                        INDEX,
+                                        ROW_COLOR)
+
+            elif window["-MONITOR_TOGGLE-"].get_text() == "ON":
+                window["-MONITOR_TOGGLE-"].update("OFF",
+                                                  button_color=WHITE + RED)
+                webdriver.update_thread(False,
+                                        window,
+                                        values,
+                                        DRIVER,
+                                        INDEX,
+                                        ROW_COLOR)
 
 ################################################################################
 # STATISTICS EVENTS                                                            #
