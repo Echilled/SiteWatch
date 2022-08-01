@@ -17,14 +17,14 @@ matplotlib.use("TkAgg")
 options = Options()
 options.add_argument("--headless")
 options.add_argument("--disable-gpu")
-options.add_experimental_option( "prefs",{'profile.managed_default_content_settings.javascript': 2})
 DRIVER = wd.Chrome(options=options)
-VERSION = "SiteWatch v0.1"
+VERSION = "SiteWatch"
 INDEX = {}
 ROW_COLOR = {}
 RED = "red4"
 GREEN = "green4"
-WHITE = "grey50"
+GREY = "grey50"
+WHITE = "white on "
 
 
 def set_layout():
@@ -140,14 +140,14 @@ def set_layout():
 
          PySG.Input(enable_events=True,
                     visible=False,
-                    key="-MONITOR_WHITELIST-"),
+                    key="-MONITOR_GREYLIST-"),
 
          PySG.FileBrowse("Whitelist",
                          size=(14, 1),
                          pad=(10, 10),
                          enable_events=True,
                          file_types=(("ALL Files", "*.json"),),
-                         key="-MONITOR_WHITELIST-"),
+                         key="-MONITOR_GREYLIST-"),
 
          PySG.Button("Report",
                      size=(14, 1),
@@ -243,10 +243,11 @@ def set_layout():
         [PySG.Text("Auto Recover: ",
                    pad=((10, 4), (10, 10))),
 
-         PySG.Button('On',
+         PySG.Button("OFF",
                      size=(14, 1),
-                     button_color='white on green',
-                     key='-RECOVERY_TOGGLE-'),
+                     button_color=WHITE + RED,
+                     disabled=True,
+                     key="-RECOVERY_TOGGLE-"),
 
          PySG.Stretch(),
 
@@ -319,7 +320,7 @@ def generate_gui(layout):
             if vad.is_valid_url(values["-WEBSITE_NAME-"]):
                 indexer.add(INDEX, values["-WEBSITE_NAME-"])
                 window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
-                window["-WEBSITE_INFO"].update("VALID DOMAIN ADDED!",
+                window["-WEBSITE_INFO"].update("VALID DOMAIN ADDED",
                                                text_color=GREEN)
                 if INDEX.keys():
                     window["-WEBSITE_MONITOR-"].update(
@@ -328,7 +329,7 @@ def generate_gui(layout):
                     window["-WEBSITE_MONITOR-"].update(
                         button_color=RED, disabled=True)
             else:
-                window["-WEBSITE_INFO"].update("INVALID DOMAIN NAME!",
+                window["-WEBSITE_INFO"].update("INVALID DOMAIN NAME",
                                                text_color=RED)
         if event == "-WEBSITE_CRAWL-":
             try:
@@ -340,13 +341,13 @@ def generate_gui(layout):
                         window["-WEBSITE_NAME-"].update(text_color="green4")
                         indexer.add(INDEX, i)
                         window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
-                        window["-WEBSITE_INFO"].update("DOMAIN CRAWLED!",
+                        window["-WEBSITE_INFO"].update("DOMAIN CRAWLED",
                                                        text_color=GREEN)
                 except Exception:
-                    window["-WEBSITE_INFO"].update("DOMAIN CRAWL FAILED!",
+                    window["-WEBSITE_INFO"].update("DOMAIN CRAWL FAILED",
                                                    text_color=RED)
             except IndexError:
-                window["-WEBSITE_INFO"].update("NO ROW SELECTED!",
+                window["-WEBSITE_INFO"].update("NO ROW SELECTED",
                                                text_color=RED)
 
         if event == "-WEBSITE_DELETE-":
@@ -356,7 +357,7 @@ def generate_gui(layout):
                                [window["-WEBSITE_LISTBOX-"].get_indexes()[0]])
 
                 window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
-                window["-WEBSITE_INFO"].update("DOMAIN DELETED!",
+                window["-WEBSITE_INFO"].update("DOMAIN DELETED",
                                                text_color=GREEN)
                 if INDEX.keys():
                     window["-WEBSITE_MONITOR-"].update(
@@ -365,17 +366,17 @@ def generate_gui(layout):
                     window["-WEBSITE_MONITOR-"].update(
                         button_color=RED, disabled=True)
             except IndexError:
-                window["-WEBSITE_INFO"].update("NO ROW SELECTED!",
+                window["-WEBSITE_INFO"].update("NO ROW SELECTED",
                                                text_color=RED)
 
         if event == "-WEBSITE_COPY-":
             try:
                 pyperclip.copy(window["-WEBSITE_LISTBOX-"].get_list_values()
                                [window["-WEBSITE_LISTBOX-"].get_indexes()[0]])
-                window["-WEBSITE_INFO"].update("DOMAIN COPIED TO CLIPBOARD!",
+                window["-WEBSITE_INFO"].update("DOMAIN COPIED TO CLIPBOARD",
                                                text_color=GREEN)
             except IndexError:
-                window["-WEBSITE_INFO"].update("NO ROW SELECTED!",
+                window["-WEBSITE_INFO"].update("NO ROW SELECTED",
                                                text_color=RED)
 
         if event == "-WEBSITE_MONITOR-":
@@ -391,7 +392,7 @@ def generate_gui(layout):
             window["-MONITOR_TAB-"].update(disabled=False)
             window["-TAB_GROUP-"].Widget.select(1)
             window["-WEBSITE_TAB-"].update(disabled=True)
-            window["-WEBSITE_INFO"].update("PROCEED TO MONITOR!",
+            window["-WEBSITE_INFO"].update("PROCEED TO MONITOR",
                                            text_color=GREEN)
 
         if event == "-WEBSITE_UPLOAD-":
@@ -404,7 +405,7 @@ def generate_gui(layout):
 
                     window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
                     window["-WEBSITE_INFO"]. \
-                        update("VALID INDEX FILE UPLOADED!",
+                        update("VALID INDEX FILE UPLOADED",
                                text_color=GREEN)
                     if INDEX.keys():
                         window["-WEBSITE_MONITOR-"].update(
@@ -416,10 +417,10 @@ def generate_gui(layout):
                             disabled=True)
                 else:
                     window["-WEBSITE_INFO"]. \
-                        update("INVALID INDEX FILE!", text_color=RED)
+                        update("INVALID INDEX FILE", text_color=RED)
             except FileNotFoundError:
                 window["-WEBSITE_INFO"]. \
-                    update("INDEX FILE NOT FOUND!", text_color=RED)
+                    update("INDEX FILE NOT FOUND", text_color=RED)
 
 ################################################################################
 # MONITOR EVENTS                                                               #
@@ -451,8 +452,8 @@ def generate_gui(layout):
                 window.refresh()
 
         if event == "-MONITOR_UPDATE-":
-            window["-MONITOR_INFO-"].update("UPDATING DOMAIN!",
-                                            text_color=WHITE)
+            window["-MONITOR_INFO-"].update("UPDATING DOMAIN",
+                                            text_color=GREY)
             window["-MONITOR_PROG-"].update(0, 1)
 
             if selected_row is not None:
@@ -461,7 +462,7 @@ def generate_gui(layout):
                 if webdriver.check_whitelist(url):
                     wl = webdriver.whitelist(DRIVER, url)
                     if wl[0]:
-                        ROW_COLOR[url[0]] = WHITE
+                        ROW_COLOR[url[0]] = GREY
                     else:
                         ROW_COLOR[url[0]] = RED
 
@@ -493,16 +494,16 @@ def generate_gui(layout):
                         window["-MONITOR_TABLE-"].get(), ROW_COLOR))
                 window.refresh()
             else:
-                window["-MONITOR_INFO-"].update("NO ROW SELECTED!",
+                window["-MONITOR_INFO-"].update("NO ROW SELECTED",
                                                 text_color=RED)
 
-            window["-MONITOR_INFO-"].update("DOMAIN UPDATED!",
+            window["-MONITOR_INFO-"].update("DOMAIN UPDATED",
                                             text_color=GREEN)
             window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_UPDATE_ALL-":
-            window["-MONITOR_INFO-"].update("UPDATING ALL DOMAINS!",
-                                            text_color=WHITE)
+            window["-MONITOR_INFO-"].update("UPDATING ALL DOMAINS",
+                                            text_color=GREY)
             max_val = len(window["-MONITOR_TABLE-"].get())
             window["-MONITOR_PROG-"].update(0, max_val)
             for selected_row, url in enumerate(window["-MONITOR_TABLE-"].get()):
@@ -512,7 +513,7 @@ def generate_gui(layout):
 
                     wl = webdriver.whitelist(DRIVER, url)
                     if wl[0]:
-                        ROW_COLOR[url[0]] = WHITE
+                        ROW_COLOR[url[0]] = GREY
                     else:
                         ROW_COLOR[url[0]] = RED
 
@@ -533,7 +534,7 @@ def generate_gui(layout):
                                                          .get(),
                                                          ROW_COLOR))
 
-                    window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED!",
+                    window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED",
                                                     text_color=GREEN)
                     window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
 
@@ -562,12 +563,12 @@ def generate_gui(layout):
                                                      ROW_COLOR))
                 window.refresh()
 
-            window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED!",
+            window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED",
                                             text_color=GREEN)
 
         if event == "-MONITOR_DETAILS-":
-            window["-MONITOR_INFO-"].update("GENERATING DETAILS!",
-                                            text_color=WHITE)
+            window["-MONITOR_INFO-"].update("GENERATING DETAILS",
+                                            text_color=GREY)
             window["-MONITOR_PROG-"].update(0, 1)
             if selected_row is not None:
                 domain = window["-MONITOR_TABLE-"].get()[
@@ -577,45 +578,48 @@ def generate_gui(layout):
                                          values["-WEBSITE_FILENAME-"])
                 pyperclip.copy(info)
                 PySG.popup("URL DETAILS",
-                           info + "Details copied onto your clipboard!", )
-                window["-MONITOR_INFO-"].update("GENERATED DETAILS!",
+                           info + "Details copied onto your clipboard", )
+                window["-MONITOR_INFO-"].update("GENERATED DETAILS",
                                                 text_color=GREEN)
             else:
-                window["-MONITOR_INFO-"].update("NO ROW SELECTED!",
+                window["-MONITOR_INFO-"].update("NO ROW SELECTED",
                                                 text_color=RED)
             window["-MONITOR_PROG-"].update(1, 1)
 
-        if event == "-MONITOR_WHITELIST-":
-            if values["-MONITOR_WHITELIST-"] != "":
-                webdriver.set_whitelist(values["-MONITOR_WHITELIST-"])
-                window["-MONITOR_INFO-"].update("WHITELIST UPLOADED!",
-                                                text_color=GREEN)
+        if event == "-MONITOR_GREYLIST-":
+            if values["-MONITOR_GREYLIST-"] != "":
+                if webdriver.set_whitelist(values["-MONITOR_GREYLIST-"]):
+                    window["-MONITOR_INFO-"].update("GREYLIST UPLOADED",
+                                                    text_color=GREEN)
+                else:
+                    window["-MONITOR_INFO-"].update("INVALID GREYLIST",
+                                                    text_color=RED)
 
         if event == "-MONITOR_REPORT-":
-            window["-MONITOR_INFO-"].update("GENERATING REPORT!",
-                                            text_color=WHITE)
+            window["-MONITOR_INFO-"].update("GENERATING REPORT",
+                                            text_color=GREY)
             window["-MONITOR_PROG-"].update(0, 1)
             try:
                 for url in INDEX.keys():
                     archiver.Diff_url(DRIVER, url)
                 archiver.report_generation(INDEX)
-                window["-MONITOR_INFO-"].update("REPORT GENERATED!",
+                window["-MONITOR_INFO-"].update("REPORT GENERATED",
                                                 text_color=GREEN)
             except Exception:
-                window["-MONITOR_INFO-"].update("REPORTING FAILED!",
+                window["-MONITOR_INFO-"].update("REPORTING FAILED",
                                                 text_color=RED)
 
             window["-MONITOR_PROG-"].update(1, 1)
 
         if event == "-MONITOR_SAVE-":
             print(INDEX)
-            window["-MONITOR_INFO-"].update("SAVING JSON ARCHIVE!",
-                                            text_color=WHITE)
+            window["-MONITOR_INFO-"].update("SAVING JSON ARCHIVE",
+                                            text_color=GREY)
             window["-MONITOR_PROG-"].update(0, 1)
             archiver.archive_updater(DRIVER,
                                      INDEX,
                                      values["-WEBSITE_FILENAME-"])
-            window["-MONITOR_INFO-"].update("JSON ARCHIVE UPDATED!",
+            window["-MONITOR_INFO-"].update("JSON ARCHIVE UPDATED",
                                             text_color=GREEN)
             if figure_agg:
                 stats_graph.delete_fig_agg(figure_agg)
@@ -637,23 +641,25 @@ def generate_gui(layout):
 ################################################################################
 # RECOVERY EVENTS                                                              #
 ################################################################################
-        if event == "-RECOVERY_TABLE-":
-            pass
-        if event == "-RECOVERY_TOGGLE-":
-            pass
         if event == "-RECOVERY_ROOT-":
-            print(window["-RECOVERY_ROOT-"].get())
-            target_folder = values["-RECOVERY_ROOT-"]
-        if event == "-RECOVERY_ARCHIVE-":
-            print(window["-RECOVERY_ARCHIVE-"].get())
-            backup_folder = values["-RECOVERY_ARCHIVE-"]
-        if event == "-RECOVERY_RECOVER-":
-            recover_folder(target_folder, backup_folder)
-        # if event == "-RECOVERY_RECOVER-":
-        #    print(window["-RECOVERY_ROOT-"].get())
-        #    target_folder = values["-RECOVERY_ROOT-"]
-        #    print(window["-RECOVERY_ARCHIVE-"].get())
-        #    backup_folder = values["-RECOVERY_ARCHIVE-"]
+            if values["-RECOVERY_ROOT-"] != "":
+                #windows["-RECOVERY_TABLE-"].update(scanned directory 2D Array)
+                window["-RECOVERY_TOGGLE-"].update(disabled=False)
+            else:
+                window["-RECOVERY_TOGGLE-"].update(disabled=True)
+
+        if event == "-RECOVERY_TOGGLE-":
+            if window["-RECOVERY_TOGGLE-"].get_text() == "OFF":
+                window["-RECOVERY_TOGGLE-"].update("ON",
+                                                   button_color=WHITE +
+                                                                GREEN)
+                #windows["-RECOVERY_TABLE-"].get() directory table
+                #Thread ON from function call
+            elif window["-RECOVERY_TOGGLE-"].get_text() == "ON":
+                window["-RECOVERY_TOGGLE-"].update("OFF",
+                                                   button_color=WHITE +
+                                                                RED)
+                #Thread OFF from function call
 
 ################################################################################
 ################################################################################
@@ -668,7 +674,7 @@ def test_func():
 def test():
     if test_func():
         return True
-    # print("All Testing Completed Successfully!")
+    # print("All Testing Completed Successfully")
 
 
 ################################################################################
