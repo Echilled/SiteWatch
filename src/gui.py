@@ -140,14 +140,14 @@ def set_layout():
 
          PySG.Input(enable_events=True,
                     visible=False,
-                    key="-MONITOR_GREYLIST-"),
+                    key="-MONITOR_WHITELIST-"),
 
          PySG.FileBrowse("Whitelist",
                          size=(14, 1),
                          pad=(10, 10),
                          enable_events=True,
                          file_types=(("ALL Files", "*.json"),),
-                         key="-MONITOR_GREYLIST-"),
+                         key="-MONITOR_WHITELIST-"),
 
          PySG.Button("Report",
                      size=(14, 1),
@@ -586,13 +586,13 @@ def generate_gui(layout):
                                                 text_color=RED)
             window["-MONITOR_PROG-"].update(1, 1)
 
-        if event == "-MONITOR_GREYLIST-":
-            if values["-MONITOR_GREYLIST-"] != "":
-                if webdriver.set_whitelist(values["-MONITOR_GREYLIST-"]):
-                    window["-MONITOR_INFO-"].update("GREYLIST UPLOADED",
+        if event == "-MONITOR_WHITELIST-":
+            if values["-MONITOR_WHITELIST-"] != "":
+                if webdriver.set_whitelist(values["-MONITOR_WHITELIST-"]):
+                    window["-MONITOR_INFO-"].update("WHITELIST UPLOADED",
                                                     text_color=GREEN)
                 else:
-                    window["-MONITOR_INFO-"].update("INVALID GREYLIST",
+                    window["-MONITOR_INFO-"].update("INVALID WHITELIST",
                                                     text_color=RED)
 
         if event == "-MONITOR_REPORT-":
