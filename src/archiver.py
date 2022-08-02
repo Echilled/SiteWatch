@@ -252,11 +252,6 @@ def page_changes_listing():
         print("changes discarded")
 
 
-# print('If you want to accept all changes, press 0')
-# decision = input('Enter you choice')
-# print(decision)
-
-
 def ad_blocker(DRIVER,):
     all_iframes = DRIVER.find_elements(By.TAG_NAME, "iframe")
     if len(all_iframes) > 0:
