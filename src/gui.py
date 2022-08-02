@@ -662,31 +662,13 @@ def generate_gui(layout):
 ################################################################################
 # STATISTICS EVENTS                                                            #
 ################################################################################
-
+    # NONE
 ################################################################################
 # RECOVERY EVENTS                                                              #
 ################################################################################
-        if event == "-RECOVERY_ROOT-":
-            if values["-RECOVERY_ROOT-"] != "":
-                #windows["-RECOVERY_TABLE-"].update(scanned directory 2D Array)
-                window["-RECOVERY_TOGGLE-"].update(disabled=False)
-            else:
-                window["-RECOVERY_TOGGLE-"].update(disabled=True)
-
-        if event == "-RECOVERY_TOGGLE-":
-            if window["-RECOVERY_TOGGLE-"].get_text() == "OFF":
-                window["-RECOVERY_TOGGLE-"].update("ON",
-                                                   button_color=WHITE +
-                                                                GREEN)
-                #windows["-RECOVERY_TABLE-"].get() directory table
-                #Thread ON from function call
-            elif window["-RECOVERY_TOGGLE-"].get_text() == "ON":
-                window["-RECOVERY_TOGGLE-"].update("OFF",
-                                                   button_color=WHITE +
-                                                                RED)
-                #Thread OFF from function call
-
+    # NONE
 ################################################################################
+
 ################################################################################
 # TESTS                                                                        #
 ################################################################################
