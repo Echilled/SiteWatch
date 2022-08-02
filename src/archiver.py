@@ -1,17 +1,14 @@
 import difflib
 import os
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-import hashlib
 import datetime
 import json
 import re
-
 from selenium.webdriver.common.by import By
 
 times_url_change_dict = {}
 DOM_CHANGES = {}
 APP_PASSWORD = 'happymother123'
+
 
 def format_title(title):
     title = title.replace("|", "")
@@ -61,12 +58,6 @@ def json_construct(id, hash, date, times_it_changed):
     for val in values:
         website_dic[id]['properties'].update(val)
     return website_dic
-
-
-# def update_json(filename, data_dict):
-#     with open(filename, "w") as outfile:
-#         json_object = json.dumps(data_dict, indent=4)
-#         outfile.write(json_object)
 
 
 def update_json(filename, INDEX):  # updating the json values within the json file and writing out to it
@@ -198,28 +189,6 @@ def Diff_url(DRIVER, url):  # same diff function but using url as arguement
     except Exception as e:
         print(e)
 
-#
-# def show_difference(old_file, new_file):
-#     f_old = open(old_file)
-#     old_text = f_old.readlines()
-#     f_new = open(new_file)
-#     new_text = f_new.readlines()
-#     return Diff(old_text, new_text)
-
-
-# def page_checker(url):
-#     DRIVER.get(url)
-#     webpage_title = format_title(DRIVER.title)
-#     old = "archive\\" + webpage_title + ".html"
-#     new = "archive\\" + webpage_title + "_new.html"
-#     try:
-#         if os.path.isfile(old) and os.path.isfile(new):  # If files exist in the archive
-#             DOM_CHANGES[url] = show_difference(old, new)
-#         else:
-#             print('relevant files does not exist for comparison, could be first time archiving webpage code')
-#     except Exception as e:
-#         print(e)
-
 
 def get_removed_content(changed_list, original_list):
     empty_element = ''
@@ -248,11 +217,6 @@ def page_changes_listing():
         archive_updater("archive\WebHash.Json")
     if userinput.lower() == "n":
         print("changes discarded")
-
-
-# print('If you want to accept all changes, press 0')
-# decision = input('Enter you choice')
-# print(decision)
 
 
 def ad_blocker(DRIVER,):

@@ -1,5 +1,5 @@
 import json
-import validator
+import validators
 
 def json_hash_indexer(location="archive/WebHash.Json"):
     with open(location, "r") as file:
@@ -39,7 +39,7 @@ def json_verifier(json_filename, decryption_password=123):
                 return False
             else:
                 for url, properties in data["URLs"].items():
-                    if not validator.is_valid_url(url):
+                    if not validators.url(url):
                         print("URLs may be missing or not in correct format, please check")
                         return False
                     key, value = list(properties.items())[0]

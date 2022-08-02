@@ -5,7 +5,7 @@ from selenium import webdriver as wd
 from selenium.webdriver.chrome.options import Options
 
 import archiver
-import validator as vad
+import validators as vad
 import pyperclip
 import matplotlib
 import parse_json
@@ -319,7 +319,6 @@ def generate_gui(layout):
                          layout,
                          margins=(10, 5),
                          finalize=True)
-    window_pop_out = None
 
     figure_agg = stats_graph.draw_figure(window["-STATS_CANVAS-"].TKCanvas,
                                          stats_graph.create_scatterplot())
@@ -337,7 +336,7 @@ def generate_gui(layout):
 ################################################################################
 
         if event == "-WEBSITE_VALIDATE-":
-            if vad.is_valid_url(values["-WEBSITE_NAME-"]):
+            if vad.url(values["-WEBSITE_NAME-"]):
                 indexer.add(INDEX, values["-WEBSITE_NAME-"])
                 window["-WEBSITE_LISTBOX-"].update(sorted(INDEX.keys()))
                 window["-WEBSITE_INFO"].update("VALID DOMAIN ADDED",

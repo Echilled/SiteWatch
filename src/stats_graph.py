@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import json
 import pandas as pd
@@ -56,19 +55,6 @@ def create_scatterplot():
 def delete_fig_agg(fig_agg):
     fig_agg.get_tk_widget().forget()
     plt.close('all')
-
-
-#
-# def create_bar_graph(stats_dict):
-#     plt.figure(figsize = (10, 7))
-#     courses = list(stats_dict.keys())
-#     values = list(stats_dict.values())
-#     plt.bar(courses, values, color='maroon',
-#             width=0.4)
-#     plt.xlabel("URLs checked")
-#     plt.ylabel("No. of times it's content changed")
-#     plt.title("Number of times each URL changed")
-#     return plt.gcf()
 
 
 def main():
