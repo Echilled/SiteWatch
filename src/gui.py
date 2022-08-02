@@ -1,3 +1,5 @@
+import time
+
 import PySimpleGUI as PySG
 from selenium import webdriver as wd
 from selenium.webdriver.chrome.options import Options
@@ -102,7 +104,7 @@ def set_layout():
                    pad=(10, 0),
                    text_color="white")],
 
-        [PySG.Table(values=[],
+        {PySG.Table(values=[],
                     headings=["Domain", "Hash", "Updated"],
                     justification="left",
                     text_color="white",
@@ -113,7 +115,7 @@ def set_layout():
                     expand_x=True,
                     expand_y=True,
                     enable_click_events=True,
-                    key="-MONITOR_TABLE-")],
+                    key="-MONITOR_TABLE-")},
 
         [PySG.Text("Filter: ",
                    pad=((10, 4), (10, 0))),
@@ -147,7 +149,7 @@ def set_layout():
                          pad=(10, 10),
                          enable_events=True,
                          file_types=(("ALL Files", "*.json"),),
-                         key="-MONITOR_WHITELIST-"),
+                         key="-MONITOR_WHITELIST_BTN-"),
 
          PySG.Button("Report",
                      size=(14, 1),
@@ -300,9 +302,17 @@ def set_layout():
 
 def generate_gui(layout):
     # Website Variables
+    # NONE
 
     # Monitor Variables
     selected_row = None
+    sort = True
+
+    # Statistics Variables
+    # NONE
+
+    # Recovery Variables
+    # NONE
 
     # Create the Window
     window = PySG.Window(VERSION,
@@ -445,15 +455,14 @@ def generate_gui(layout):
                                                  ROW_COLOR))
             window.refresh()
 
-        if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
+        if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+" and sort:
             if event[2][0] == -1 and event[2][1] != -1:
                 window["-MONITOR_TABLE-"].update(indexer.sort_table(
                     window["-MONITOR_TABLE-"].get(), event[2][1]))
-                window.refresh()
                 window["-MONITOR_TABLE-"].Update(
-                    row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
-                                                     .get(),
-                                                     ROW_COLOR))
+                    row_colors=indexer.set_row_color(
+                        window["-MONITOR_TABLE-"].get(),
+                        ROW_COLOR))
                 window.refresh()
 
         if event[0] == "-MONITOR_TABLE-" and event[1] == "+CLICKED+":
@@ -492,35 +501,33 @@ def generate_gui(layout):
                     else:
                         ROW_COLOR[url[0]] = RED
 
-                    window["-MONITOR_REPORT-"].update(
-                        button_color=GREEN,
-                        disabled=False)
-                    window["-MONITOR_SAVE-"].update(
-                        button_color=GREEN,
-                        disabled=False)
-
                 window["-MONITOR_TABLE-"].Update(
                     row_colors=indexer.set_row_color(
                         window["-MONITOR_TABLE-"].get(), ROW_COLOR))
-                window.refresh()
+                window["-MONITOR_REPORT-"].update(
+                    button_color=GREEN,
+                    disabled=False)
+                window["-MONITOR_SAVE-"].update(
+                    button_color=GREEN,
+                    disabled=False)
+                window["-MONITOR_INFO-"].update("DOMAIN UPDATED",
+                                                text_color=GREEN)
+                window["-MONITOR_PROG-"].update(1, 1)
             else:
                 window["-MONITOR_INFO-"].update("NO ROW SELECTED",
                                                 text_color=RED)
 
-            window["-MONITOR_INFO-"].update("DOMAIN UPDATED",
-                                            text_color=GREEN)
-            window["-MONITOR_PROG-"].update(1, 1)
-
         if event == "-MONITOR_UPDATE_ALL-":
             window["-MONITOR_INFO-"].update("UPDATING ALL DOMAINS",
                                             text_color=GREY)
+            webdriver.element_state(window, True)
+            sort = False
             max_val = len(window["-MONITOR_TABLE-"].get())
             window["-MONITOR_PROG-"].update(0, max_val)
             for selected_row, url in enumerate(window["-MONITOR_TABLE-"].get()):
                 url = window["-MONITOR_TABLE-"].get()[selected_row]
 
                 if webdriver.check_whitelist(url):
-
                     wl = webdriver.whitelist(DRIVER, url)
                     if wl[0]:
                         ROW_COLOR[url[0]] = GREY
@@ -531,26 +538,6 @@ def generate_gui(layout):
                     window["-MONITOR_TABLE-"].update(
                         [row for row in indexer.table(INDEX)
                          if values["-MONITOR_FILTER-"] in " ".join(row)])
-
-                    window.refresh()
-
-                    window["-MONITOR_REPORT-"].update(
-                        button_color=GREEN,
-                        disabled=False)
-                    window["-MONITOR_SAVE-"].update(
-                        button_color=GREEN,
-                        disabled=False)
-
-                    window["-MONITOR_TABLE-"].Update(
-                        row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
-                                                         .get(),
-                                                         ROW_COLOR))
-
-                    window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED",
-                                                    text_color=GREEN)
-                    window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
-                    window.refresh()
-
                 else:
                     updated = webdriver.update(DRIVER, url)
                     INDEX.update(updated)
@@ -563,26 +550,24 @@ def generate_gui(layout):
                     else:
                         ROW_COLOR[url[0]] = RED
 
-                    window.refresh()
-
-                    window["-MONITOR_REPORT-"].update(
-                        button_color=GREEN,
-                        disabled=False)
-                    window["-MONITOR_SAVE-"].update(
-                        button_color=GREEN,
-                        disabled=False)
-
                 window["-MONITOR_TABLE-"].Update(
                     row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
                                                      .get(),
                                                      ROW_COLOR))
+                window["-MONITOR_INFO-"].update(str(selected_row + 1) + " OF " +
+                                                str(max_val) + " DOMAIN UPDATED",
+                                                text_color=GREY)
                 window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
                 window.refresh()
 
+            time.sleep(2)
+            sort = True
             window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED",
                                             text_color=GREEN)
-            window["-MONITOR_PROG-"].update(max_val, max_val)
-            window.refresh()
+            window["-MONITOR_REPORT-"].update(button_color=GREEN)
+            window["-MONITOR_SAVE-"].update(button_color=GREEN)
+            webdriver.element_state(window, False)
+
 
         if event == "-MONITOR_DETAILS-":
             window["-MONITOR_INFO-"].update("GENERATING DETAILS",
@@ -654,24 +639,26 @@ def generate_gui(layout):
 
         if event == "-MONITOR_TOGGLE-":
             if window["-MONITOR_TOGGLE-"].get_text() == "AUTO":
+                sort = False
                 window["-MONITOR_TOGGLE-"].update("OFF",
                                                   button_color=WHITE + RED)
-                webdriver.update_thread(True,
-                                        window,
-                                        values,
-                                        DRIVER,
-                                        INDEX,
-                                        ROW_COLOR)
+                webdriver.auto_updater_handler(True,
+                                               window,
+                                               values,
+                                               DRIVER,
+                                               INDEX,
+                                               ROW_COLOR)
 
             elif window["-MONITOR_TOGGLE-"].get_text() == "OFF":
+                sort = True
                 window["-MONITOR_TOGGLE-"].update("AUTO",
                                                   button_color=WHITE + GREEN)
-                webdriver.update_thread(False,
-                                        window,
-                                        values,
-                                        DRIVER,
-                                        INDEX,
-                                        ROW_COLOR)
+                webdriver.auto_updater_handler(False,
+                                               window,
+                                               values,
+                                               DRIVER,
+                                               INDEX,
+                                               ROW_COLOR)
 
 ################################################################################
 # STATISTICS EVENTS                                                            #

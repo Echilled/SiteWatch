@@ -17,101 +17,6 @@ WHITE = "white on "
 thread_state = ""
 
 
-def thread_function( window, values, DRIVER, INDEX, ROW_COLOR):
-    global thread_state
-    while thread_state == "ON":
-        window["-MONITOR_INFO-"].update("STARTING THREAD",
-                                        text_color=GREY)
-        max_val = len(window["-MONITOR_TABLE-"].get())
-        window["-MONITOR_PROG-"].update(0, max_val)
-        for selected_row, url in enumerate(window["-MONITOR_TABLE-"].get()):
-            if thread_state == "OFF":
-                window["-MONITOR_INFO-"].update("STOPPING THREAD",
-                                                text_color=RED)
-                return
-            url = window["-MONITOR_TABLE-"].get()[selected_row]
-
-            if check_whitelist(url):
-
-                wl = whitelist(DRIVER, url)
-                if wl[0]:
-                    ROW_COLOR[url[0]] = GREY
-                else:
-                    ROW_COLOR[url[0]] = RED
-
-                INDEX.update({wl[1]: [wl[2], wl[3]]})
-                window["-MONITOR_TABLE-"].update(
-                    [row for row in indexer.table(INDEX)
-                     if values["-MONITOR_FILTER-"] in " ".join(row)])
-
-                window.refresh()
-
-                window["-MONITOR_REPORT-"].update(
-                    button_color=GREEN,
-                    disabled=False)
-                window["-MONITOR_SAVE-"].update(
-                    button_color=GREEN,
-                    disabled=False)
-
-                window["-MONITOR_TABLE-"].Update(
-                    row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
-                                                     .get(),
-                                                     ROW_COLOR))
-
-                window["-MONITOR_INFO-"].update("ALL DOMAIN UPDATED",
-                                                text_color=GREEN)
-                window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
-                window.refresh()
-
-            else:
-                updated = update(DRIVER, url)
-                INDEX.update(updated)
-                window["-MONITOR_TABLE-"].update(
-                    [row for row in indexer.table(INDEX)
-                     if values["-MONITOR_FILTER-"] in " ".join(row)])
-                url = window["-MONITOR_TABLE-"].get()[selected_row]
-                if compare_hash(DRIVER, url)[0]:
-                    ROW_COLOR[url[0]] = GREEN
-                else:
-                    ROW_COLOR[url[0]] = RED
-
-                window.refresh()
-
-                window["-MONITOR_REPORT-"].update(
-                    button_color=GREEN,
-                    disabled=False)
-                window["-MONITOR_SAVE-"].update(
-                    button_color=GREEN,
-                    disabled=False)
-
-            window["-MONITOR_TABLE-"].Update(
-                row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
-                                                 .get(),
-                                                 ROW_COLOR))
-            window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
-            window.refresh()
-
-        window["-MONITOR_INFO-"].update("RE-STARTING THREAD",
-                                        text_color=GREEN)
-        window["-MONITOR_PROG-"].update(max_val, max_val)
-        window.refresh()
-        time.sleep(5)
-
-
-def update_thread(state, window, values, DRIVER, INDEX, ROW_COLOR):
-    global thread_state
-    if state:
-        thread_state = "ON"
-        t = threading.Thread(target=thread_function, args=(window,
-                                                           values,
-                                                           DRIVER,
-                                                           INDEX,
-                                                           ROW_COLOR)).start()
-    if not state:
-        thread_state = "OFF"
-
-
-
 def update(DRIVER, domain):
     try:
         DRIVER.get(domain[0])
@@ -129,6 +34,29 @@ def update(DRIVER, domain):
         print("Problems getting domain")
         return {domain[0]: ["XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "0000-00-00 "
                                                                 "00:00:00"]}
+
+
+def details(DRIVER, domain, loc):
+    try:
+        out = []
+        DRIVER.get(domain[0])
+        title = DRIVER.title.replace("|", "")
+
+        size_kb = os.path.getsize("archive/" + title + ".html") / 1024.0
+        old_index = parse_json.json_hash_indexer(loc)
+
+        out.append("URL: " + domain[0] + "\r\n")
+        out.append("Title: " + title + "\r\n")
+        out.append("New MD5: " + domain[1] + "\r\n")
+        out.append("Old   MD5: " + old_index[domain[0]][0] + "\r\n")
+        out.append("Updated: " + domain[2] + "\r\n")
+        out.append("Archived: " + old_index[domain[0]][1] + "\r\n")
+        out.append("File Size: " + str(size_kb) + "KB" + "\r\n")
+        out.append("\r\n")
+
+        return "".join(out)
+    except Exception:
+        return "Error Getting Details!"
 
 
 def check_whitelist(domain):
@@ -202,26 +130,104 @@ def compare_hash(DRIVER, domain):
         return [False, "File", "Not", "Found"]
 
 
-def details(DRIVER, domain, loc):
-    try:
-        out = []
-        DRIVER.get(domain[0])
-        title = DRIVER.title.replace("|", "")
+def element_state(window, state):
+    window["-MONITOR_FILTER-"].update(disabled=state)
+    window["-MONITOR_UPDATE-"].update(disabled=state)
+    window["-MONITOR_UPDATE_ALL-"].update(disabled=state)
+    window["-MONITOR_DETAILS-"].update(disabled=state)
+    window["-MONITOR_WHITELIST_BTN-"].update(disabled=state)
+    window["-MONITOR_REPORT-"].update(disabled=state)
+    window["-MONITOR_SAVE-"].update(disabled=state)
+    window["-MONITOR_BACK-"].update(disabled=state)
+    window["-MONITOR_TOGGLE-"].update(disabled=state)
 
-        size_kb = os.path.getsize("archive/" + title + ".html") / 1024.0
-        old_index = parse_json.json_hash_indexer(loc)
 
-        out.append("URL: " + domain[0] + "\r\n")
-        out.append("Title: " + title + "\r\n")
-        out.append("New MD5: " + domain[1] + "\r\n")
-        out.append("Old   MD5: " + old_index[domain[0]][0] + "\r\n")
-        out.append("Updated: " + domain[2] + "\r\n")
-        out.append("Archived: " + old_index[domain[0]][1] + "\r\n")
-        out.append("File Size: " + str(size_kb) + "KB" + "\r\n")
-        out.append("\r\n")
+def auto_updater( window, values, DRIVER, INDEX, ROW_COLOR):
+    global thread_state
+    window["-MONITOR_TOGGLE-"].update(disabled=False)
+    if thread_state == "OFF":
+        element_state(window, False)
+        window["-MONITOR_INFO-"].update("AUTO MONITORING STOPPED",
+                                        text_color=GREEN)
+        window["-MONITOR_PROG-"].update(0, 0)
+        return
+    while thread_state == "ON":
+        max_val = len(window["-MONITOR_TABLE-"].get())
+        window["-MONITOR_PROG-"].update(0, max_val)
+        for selected_row, url in enumerate(window["-MONITOR_TABLE-"].get()):
+            if thread_state == "OFF":
+                element_state(window, False)
+                window["-MONITOR_INFO-"].update("AUTO MONITORING STOPPED",
+                                                text_color=GREEN)
+                window["-MONITOR_PROG-"].update(0, 0)
+                window["-MONITOR_REPORT-"].update(button_color=GREEN)
+                window["-MONITOR_SAVE-"].update(button_color=GREEN)
+                return
 
-        return "".join(out)
-    except Exception:
-        return "Error Getting Details!"
+            url = window["-MONITOR_TABLE-"].get()[selected_row]
+
+            if check_whitelist(url):
+                wl = whitelist(DRIVER, url)
+                if wl[0]:
+                    ROW_COLOR[url[0]] = GREY
+                else:
+                    ROW_COLOR[url[0]] = RED
+
+                INDEX.update({wl[1]: [wl[2], wl[3]]})
+                window["-MONITOR_TABLE-"].update(
+                    [row for row in indexer.table(INDEX)
+                     if values["-MONITOR_FILTER-"] in " ".join(row)])
+            else:
+                updated = update(DRIVER, url)
+                INDEX.update(updated)
+                window["-MONITOR_TABLE-"].update(
+                    [row for row in indexer.table(INDEX)
+                     if values["-MONITOR_FILTER-"] in " ".join(row)])
+                url = window["-MONITOR_TABLE-"].get()[selected_row]
+                if compare_hash(DRIVER, url)[0]:
+                    ROW_COLOR[url[0]] = GREEN
+                else:
+                    ROW_COLOR[url[0]] = RED
+
+            window["-MONITOR_TABLE-"].Update(
+                row_colors=indexer.set_row_color(window["-MONITOR_TABLE-"]
+                                                 .get(),
+                                                 ROW_COLOR))
+            window["-MONITOR_INFO-"].update(str(selected_row + 1) + " OF " +
+                                            str(max_val) + " DOMAIN UPDATED",
+                                            text_color=GREY)
+            window["-MONITOR_PROG-"].update(selected_row + 1, max_val)
+            window.refresh()
+
+        time.sleep(2)
+        window["-MONITOR_INFO-"].update("RE-STARTING AUTO MONITORING",
+                                        text_color=GREEN)
+        window["-MONITOR_PROG-"].update(max_val, max_val)
+        window.refresh()
+        time.sleep(8)
+
+
+def auto_updater_handler(state, window, values, DRIVER, INDEX, ROW_COLOR):
+    global thread_state
+    if state:
+        window["-MONITOR_INFO-"].update("STARTING AUTO MONITORING",
+                                        text_color=GREEN)
+        element_state(window, True)
+
+        thread_state = "ON"
+        t = threading.Thread(target=auto_updater, args=(window,
+                                                        values,
+                                                        DRIVER,
+                                                        INDEX,
+                                                        ROW_COLOR)).start()
+    if not state:
+        window["-MONITOR_TOGGLE-"].update(disabled=True)
+        window["-MONITOR_INFO-"].update("STOPPING AUTO MONITORING",
+                                        text_color=RED)
+        thread_state = "OFF"
+
+
+
+
 
 
