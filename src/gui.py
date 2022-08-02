@@ -312,7 +312,15 @@ def generate_gui(layout):
     figure_agg = None
 
     # Recovery Variables
-    # NONE
+    filearray2D = []
+    original_hashes = []
+
+    auto_recover_status = False
+    root_folder_set = False
+    # global auto_recover_status
+    # global root_folder_set
+    target_folder = ""
+    backup_folder = ""
 
     # Create the Window
     window = PySG.Window(VERSION,
