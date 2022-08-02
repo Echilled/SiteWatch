@@ -4,7 +4,7 @@ An interactive monitoring tool
 
 ## JSON Formatting
 The appropriate file format for the JSON file to store URL properties, 'WebHash.json' are as follows,
-
+The JSON file, 'WebHash.json' should also be in the archive folder at all times
 The Input JSON File, 'WebHash.json',  for SiteWatch should look something like this: 
 
 ```json
