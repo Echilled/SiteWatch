@@ -180,9 +180,10 @@ def set_layout():
 
          PySG.Stretch(),
 
-         PySG.Button("OFF",
+         PySG.Button("AUTO",
                      size=(14, 1),
-                     button_color=WHITE + RED,
+                     pad=(14, 10),
+                     button_color=WHITE + GREEN,
                      disabled=False,
                      key="-MONITOR_TOGGLE-"),
          ]
@@ -652,9 +653,9 @@ def generate_gui(layout):
             window["-MONITOR_TAB-"].update(disabled=True)
 
         if event == "-MONITOR_TOGGLE-":
-            if window["-MONITOR_TOGGLE-"].get_text() == "OFF":
-                window["-MONITOR_TOGGLE-"].update("ON",
-                                                  button_color=WHITE + GREEN)
+            if window["-MONITOR_TOGGLE-"].get_text() == "AUTO":
+                window["-MONITOR_TOGGLE-"].update("OFF",
+                                                  button_color=WHITE + RED)
                 webdriver.update_thread(True,
                                         window,
                                         values,
@@ -662,9 +663,9 @@ def generate_gui(layout):
                                         INDEX,
                                         ROW_COLOR)
 
-            elif window["-MONITOR_TOGGLE-"].get_text() == "ON":
-                window["-MONITOR_TOGGLE-"].update("OFF",
-                                                  button_color=WHITE + RED)
+            elif window["-MONITOR_TOGGLE-"].get_text() == "OFF":
+                window["-MONITOR_TOGGLE-"].update("AUTO",
+                                                  button_color=WHITE + GREEN)
                 webdriver.update_thread(False,
                                         window,
                                         values,
