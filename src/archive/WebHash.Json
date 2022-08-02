@@ -42,6 +42,13 @@
                 "number of times URL content change": 3
             }
         },
+        "https://plainvanilla.com.sg/": {
+            "properties": {
+                "hash": "F999293DF7BD29D779513FAB48DBF5EB",
+                "archival_date": "2022-08-02 17:38:28",
+                "number of times URL content change": 0
+            }
+        },
         "https://numbergenerator.org/": {
             "properties": {
                 "hash": "260ADE173519522D8193CAADB240FFB5",
