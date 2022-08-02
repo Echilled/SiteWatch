@@ -14,7 +14,7 @@ import crawler
 import stats_graph
 import webdriver
 
-figure_agg = None
+
 matplotlib.use("TkAgg")
 options = Options()
 options.add_argument("--headless")
@@ -309,7 +309,7 @@ def generate_gui(layout):
     sort = True
 
     # Statistics Variables
-    # NONE
+    figure_agg = None
 
     # Recovery Variables
     # NONE
