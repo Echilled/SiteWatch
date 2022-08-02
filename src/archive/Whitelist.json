@@ -3,6 +3,10 @@
         "https://www.isomer.gov.sg/": {
             "script": "script",
             "iframe": "iframe"
+        },
+        "https://plainvanilla.com.sg/": {
+            "script": "script",
+            "iframe": "iframe"
         }
     }
 }

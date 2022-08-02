@@ -119,7 +119,7 @@ def compare_hash(DRIVER, domain):
     title = DRIVER.title.replace("|", "")
     new_md5 = domain[1]
     try:
-        with open("archive/" + title + ".html", "r", encoding='utf-8') as rf:
+        with open("archive/" + title + ".html", "r", encoding="utf-8") as rf:
             dom = "".join(rf.readlines())
             old_md5 = hashlib.md5(dom.encode("utf-8")).hexdigest().upper()
             if new_md5 == old_md5:
