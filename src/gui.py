@@ -255,11 +255,10 @@ def set_layout():
         [PySG.Text("Auto Recover: ",
                    pad=((10, 4), (10, 10))),
 
-         PySG.Button("OFF",
+         PySG.Button('Off',
                      size=(14, 1),
-                     button_color=WHITE + RED,
-                     disabled=True,
-                     key="-RECOVERY_TOGGLE-"),
+                     button_color='white on red',
+                     key='-RECOVERY_TOGGLE-'),
 
          PySG.Stretch(),
 
@@ -679,20 +678,13 @@ def generate_gui(layout):
             pass
         if event == "-RECOVERY_TOGGLE-":
             auto_recover_status = not auto_recover_status
-            if auto_recover_status is True and target_folder != "" and\
-                    backup_folder != "":
+            if auto_recover_status is True and target_folder != "" and backup_folder != "":
                 window["-RECOVERY_TOGGLE-"].update("ON",
-                                                   button_color=WHITE + GREEN)
-                # windows["-RECOVERY_TABLE-"].get() directory table
-                # Thread ON from function call
+                                                   button_color="white on green")
             else:
                 window["-RECOVERY_TOGGLE-"].update("OFF",
-                                                   button_color=WHITE + RED)
-                # Thread OFF from function call
-            auto_recovery(auto_recover_status,
-                          window, target_folder,
-                          backup_folder,
-                          root_folder_set)
+                                                   button_color="white on red")
+            auto_recovery(auto_recover_status, window, target_folder, backup_folder, root_folder_set)
             pass
         if event == "-RECOVERY_ROOT-":
             print(window["-RECOVERY_ROOT-"].get())
@@ -700,9 +692,6 @@ def generate_gui(layout):
             filearray2D = root_browser(target_folder)
             root_folder_set = True
             if values["-RECOVERY_ROOT-"] != "":
-                # print("recovery root is ")
-                # print(values["-RECOVERY_ROOT-"])
-                # print("The type is : ",type(values["-RECOVERY_ROOT-"]))
                 window["-RECOVERY_TABLE-"].update(filearray2D)
         if event == "-RECOVERY_ARCHIVE-":
             print(window["-RECOVERY_ARCHIVE-"].get())
@@ -711,7 +700,7 @@ def generate_gui(layout):
             if target_folder != "" and backup_folder != "":
                 recover_folder(target_folder, backup_folder)
                 filearray2D = root_browser(target_folder)
-                #original_hashes = root_browser(target_folder)[1]
+                # original_hashes = root_browser(target_folder)[1]
                 window["-RECOVERY_TABLE-"].update(filearray2D)
             else:
                 pass
