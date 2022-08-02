@@ -69,6 +69,13 @@
                 "archival_date": "2022-11-11 01:46:05",
                 "number of times URL content change": 9
             }
+        },
+        "https://www.ipos.gov.sg/": {
+            "properties": {
+                "hash": "F5C0E2FD3BA96A189E8632D098FF5BD5",
+                "archival_date": "2022-08-02 18:25:55",
+                "number of times URL content change": 13
+            }
         }
     }
 }
