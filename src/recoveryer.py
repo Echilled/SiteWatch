@@ -18,15 +18,16 @@ WHITE = "grey50"
 def auto_recovery(auto_recover_status, window, target_folder, backup_folder, rootfolderset):
     global recover_state
     global set_root
-    if target_folder != "" and backup_folder != "":
-        backup_array = root_browser(backup_folder)
+
     print(auto_recover_status)
     if auto_recover_status:
-        recover_state = True
+        recover_state = auto_recover_status
     if not auto_recover_status:
-        recover_state = False
-    recoverythread = Thread(target=auto_recovery_thread,
-                            args=(window, target_folder, backup_array)).start()
+        recover_state = auto_recover_status
+    if target_folder != "" and backup_folder != "":
+        backup_array = root_browser(backup_folder)
+        recoverythread = Thread(target=auto_recovery_thread,
+                                args=(window, target_folder, backup_array)).start()
 
 
 def auto_recovery_thread(window, target_folder, backup_array):

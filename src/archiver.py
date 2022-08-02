@@ -142,12 +142,12 @@ def page_archiver(dom, title):
     print("saving pages now!")
     if not os.path.isfile("archive\\" + page_title + ".html"):
         #print('First time webpage code archive')
-        with open("archive\\" + page_title + ".html", "w+") as file:
+        with open("archive\\" + page_title + ".html", "w+", encoding='utf-8') as file:
             file.write(page_source)
     elif os.path.isfile("archive\\" + page_title + ".html"):
         #print('changed webpage code archived, will use it for comparison
         # later')
-        with open("archive\\" + page_title + "_new.html", "w+") as file:
+        with open("archive\\" + page_title + "_new.html", "w+", encoding='utf-8') as file:
             file.write(page_source)
 
 

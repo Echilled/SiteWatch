@@ -13,7 +13,7 @@ import indexer
 import crawler
 import stats_graph
 import webdriver
-
+from recoveryer import recover_folder, root_browser, auto_recovery
 
 matplotlib.use("TkAgg")
 options = Options()
@@ -671,12 +671,53 @@ def generate_gui(layout):
 # STATISTICS EVENTS                                                            #
 ################################################################################
     # NONE
+
 ################################################################################
 # RECOVERY EVENTS                                                              #
 ################################################################################
-    # NONE
-################################################################################
+        if event == "-RECOVERY_TABLE-":
+            pass
+        if event == "-RECOVERY_TOGGLE-":
+            auto_recover_status = not auto_recover_status
+            if auto_recover_status is True and target_folder != "" and\
+                    backup_folder != "":
+                window["-RECOVERY_TOGGLE-"].update("ON",
+                                                   button_color=WHITE + GREEN)
+                # windows["-RECOVERY_TABLE-"].get() directory table
+                # Thread ON from function call
+            else:
+                window["-RECOVERY_TOGGLE-"].update("OFF",
+                                                   button_color=WHITE + RED)
+                # Thread OFF from function call
+            auto_recovery(auto_recover_status,
+                          window, target_folder,
+                          backup_folder,
+                          root_folder_set)
+            pass
+        if event == "-RECOVERY_ROOT-":
+            print(window["-RECOVERY_ROOT-"].get())
+            target_folder = values["-RECOVERY_ROOT-"]
+            filearray2D = root_browser(target_folder)
+            root_folder_set = True
+            if values["-RECOVERY_ROOT-"] != "":
+                # print("recovery root is ")
+                # print(values["-RECOVERY_ROOT-"])
+                # print("The type is : ",type(values["-RECOVERY_ROOT-"]))
+                window["-RECOVERY_TABLE-"].update(filearray2D)
+        if event == "-RECOVERY_ARCHIVE-":
+            print(window["-RECOVERY_ARCHIVE-"].get())
+            backup_folder = values["-RECOVERY_ARCHIVE-"]
+        if event == "-RECOVERY_RECOVER-":
+            if target_folder != "" and backup_folder != "":
+                recover_folder(target_folder, backup_folder)
+                filearray2D = root_browser(target_folder)
+                #original_hashes = root_browser(target_folder)[1]
+                window["-RECOVERY_TABLE-"].update(filearray2D)
+            else:
+                pass
+            pass
 
+################################################################################
 ################################################################################
 # TESTS                                                                        #
 ################################################################################
