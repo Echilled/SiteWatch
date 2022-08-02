@@ -42,7 +42,7 @@ The Input JSON File, 'WebHash.json',  for SiteWatch should look something like t
 }
 ```
 
-## Formatting
+## Formatting examples
 Ensure that the Input JSON file has URL as the key and the appropriate properties: 'hash', 'archival_date' and 'number of times URL content change'. If any of these keys ("URLs", input URLs and "properties") or properties ("hash", "archival_date",  "number of times URL content change") are missing, then it will return an error and the file will not be processed. 
 
 
